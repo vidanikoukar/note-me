@@ -3,238 +3,18 @@
 @section('title', 'ویرایش نوشته - Note Me')
 
 @section('content')
-<div class="edit-page">
-    <div class="edit-hero">
-        <div class="hero-backdrop"></div>
-        <div class="hero-content">
-            <div class="container">
-                <nav class="breadcrumb-nav">
-                    <a href="{{ route('home') }}" class="breadcrumb-link">
-                        <i class="fas fa-home"></i>
-                        خانه
-                    </a>
-                    <span class="breadcrumb-separator">/</span>
-                    <a href="{{ route('posts.index') }}" class="breadcrumb-link">پست‌ها</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <a href="{{ route('posts.show', $post->id) }}" class="breadcrumb-link">{{ Str::limit($post->title, 20) }}</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-current">ویرایش</span>
-                </nav>
-                <div class="page-title">
-                    <h1>
-                        <i class="fas fa-edit"></i>
-                        ویرایش نوشته
-                    </h1>
-                    <p>محتوای خود را ویرایش و بهبود دهید</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="edit-wrapper">
-        <div class="container">
-            <div class="edit-grid">
-                <div class="form-section">
-                    <div class="form-card">
-                        <div class="form-header">
-                            <h2>
-                                <i class="fas fa-pencil-alt"></i>
-                                ویرایش محتوا
-                            </h2>
-                            <p>اطلاعات پست خود را بروزرسانی کنید</p>
-                        </div>
-
-                        <!-- Alert Messages -->
-                        @if (session('success'))
-                            <div class="custom-alert success-alert">
-                                <div class="alert-content">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>{{ session('success') }}</span>
-                                </div>
-                                <button type="button" class="alert-close" onclick="this.parentElement.remove()">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        @endif
-
-                        @if (session('error'))
-                            <div class="custom-alert error-alert">
-                                <div class="alert-content">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                    <span>{{ session('error') }}</span>
-                                </div>
-                                <button type="button" class="alert-close" onclick="this.parentElement.remove()">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        @endif
-
-                        <form method="POST" action="{{ route('posts.update', $post->id) }}" class="edit-form">
-                            @csrf
-                            @method('PUT')
-                            
-                            <div class="form-group">
-                                <label for="title" class="form-label">
-                                    <i class="fas fa-heading"></i>
-                                    عنوان نوشته
-                                </label>
-                                <div class="input-wrapper">
-                                    <input 
-                                        type="text" 
-                                        class="form-input {{ $errors->has('title') ? 'error' : '' }}" 
-                                        id="title" 
-                                        name="title" 
-                                        value="{{ old('title', $post->title) }}" 
-                                        placeholder="عنوان جذاب و توصیفی انتخاب کنید..."
-                                        required
-                                    >
-                                    <div class="input-border"></div>
-                                </div>
-                                @error('title')
-                                    <div class="error-message">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                                <div class="form-hint">
-                                    <i class="fas fa-info-circle"></i>
-                                    عنوان باید بین 5 تا 255 کاراکتر باشد
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="content" class="form-label">
-                                    <i class="fas fa-align-left"></i>
-                                    محتوای نوشته
-                                </label>
-                                <div class="textarea-wrapper">
-                                    <textarea 
-                                        class="form-textarea {{ $errors->has('content') ? 'error' : '' }}" 
-                                        id="content" 
-                                        name="content" 
-                                        rows="12" 
-                                        placeholder="محتوای خود را اینجا بنویسید..."
-                                        required
-                                    >{{ old('content', $post->content) }}</textarea>
-                                    <div class="textarea-border"></div>
-                                    <div class="character-count">
-                                        <span id="charCount">0</span> کاراکتر
-                                    </div>
-                                </div>
-                                @error('content')
-                                    <div class="error-message">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                                <div class="form-hint">
-                                    <i class="fas fa-info-circle"></i>
-                                    محتوا باید حداقل 10 کاراکتر داشته باشد
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i>
-                                    ذخیره تغییرات
-                                    <div class="btn-ripple"></div>
-                                </button>
-                                
-                                <a href="{{ route('posts.show', $post->id) }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-right"></i>
-                                    بازگشت
-                                </a>
-                                
-                                <button type="button" class="btn btn-outline" onclick="resetForm()">
-                                    <i class="fas fa-undo"></i>
-                                    بازگردانی
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="info-section">
-                    <div class="info-card">
-                        <div class="info-header">
-                            <h3>
-                                <i class="fas fa-lightbulb"></i>
-                                راهنمای ویرایش
-                            </h3>
-                        </div>
-                        <div class="info-content">
-                            <div class="tip-item">
-                                <div class="tip-icon">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="tip-text">
-                                    <h4>عنوان جذاب</h4>
-                                    <p>عنوانی انتخاب کنید که توجه خواننده را جلب کند</p>
-                                </div>
-                            </div>
-                            
-                            <div class="tip-item">
-                                <div class="tip-icon">
-                                    <i class="fas fa-paragraph"></i>
-                                </div>
-                                <div class="tip-text">
-                                    <h4>محتوای مفصل</h4>
-                                    <p>مطلب خود را کامل و واضح بیان کنید</p>
-                                </div>
-                            </div>
-                            
-                            <div class="tip-item">
-                                <div class="tip-icon">
-                                    <i class="fas fa-spell-check"></i>
-                                </div>
-                                <div class="tip-text">
-                                    <h4>بررسی املا</h4>
-                                    <p>قبل از انتشار، املا و گرامر را بررسی کنید</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-card">
-                        <div class="stats-header">
-                            <h3>
-                                <i class="fas fa-chart-bar"></i>
-                                آمار پست
-                            </h3>
-                        </div>
-                        <div class="stats-content">
-                            <div class="stat-item">
-                                <div class="stat-value">{{ $post->views_count ?? 0 }}</div>
-                                <div class="stat-label">بازدید</div>
-                                <i class="fas fa-eye stat-icon"></i>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">{{ $post->likes_count ?? 0 }}</div>
-                                <div class="stat-label">لایک</div>
-                                <i class="fas fa-heart stat-icon"></i>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">{{ $post->created_at->diffForHumans() }}</div>
-                                <div class="stat-label">ایجاد شده</div>
-                                <i class="fas fa-clock stat-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-/* Base Styles */
+/* استایل‌های قبلی شما بدون تغییر */
 .edit-page {
     background: #f8fafc;
     min-height: calc(100vh - 80px);
     direction: rtl;
 }
 
-/* Hero Section */
 .edit-hero {
     position: relative;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -316,7 +96,6 @@
     margin: 0;
 }
 
-/* Edit Wrapper */
 .edit-wrapper {
     padding: 40px 0;
 }
@@ -328,7 +107,6 @@
     align-items: start;
 }
 
-/* Form Section */
 .form-card {
     background: white;
     border-radius: 20px;
@@ -359,7 +137,6 @@
     font-size: 0.95rem;
 }
 
-/* Alert Styles */
 .custom-alert {
     margin: 20px 30px;
     padding: 15px 20px;
@@ -402,7 +179,6 @@
     background: rgba(0, 0, 0, 0.1);
 }
 
-/* Form Styles */
 .edit-form {
     padding: 30px;
 }
@@ -427,7 +203,8 @@
 }
 
 .form-input,
-.form-textarea {
+.form-textarea,
+.form-select {
     width: 100%;
     padding: 15px 20px;
     border: 2px solid #e2e8f0;
@@ -440,7 +217,8 @@
 }
 
 .form-input:focus,
-.form-textarea:focus {
+.form-textarea:focus,
+.form-select:focus {
     outline: none;
     border-color: #667eea;
     background: white;
@@ -448,7 +226,8 @@
 }
 
 .form-input.error,
-.form-textarea.error {
+.form-textarea.error,
+.form-select.error {
     border-color: #e53e3e;
     background: #fff5f5;
 }
@@ -489,7 +268,6 @@
     margin-top: 8px;
 }
 
-/* Form Actions */
 .form-actions {
     display: flex;
     gap: 15px;
@@ -552,7 +330,6 @@
     transform: translateY(-2px);
 }
 
-/* Info Section */
 .info-section {
     display: flex;
     flex-direction: column;
@@ -661,7 +438,6 @@
     opacity: 0.7;
 }
 
-/* Animations */
 @keyframes slideIn {
     from {
         transform: translateY(-10px);
@@ -673,7 +449,6 @@
     }
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
     .edit-grid {
         grid-template-columns: 1fr;
@@ -738,9 +513,297 @@
 }
 </style>
 
+<div class="edit-page">
+    <div class="edit-hero">
+        <div class="hero-backdrop"></div>
+        <div class="hero-content">
+            <div class="container">
+                <nav class="breadcrumb-nav">
+                    <a href="{{ route('home') }}" class="breadcrumb-link">
+                        <i class="fas fa-home"></i>
+                        خانه
+                    </a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="{{ route('posts.index') }}" class="breadcrumb-link">پست‌ها</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="{{ route('posts.show', $post->id) }}" class="breadcrumb-link">{{ Str::limit($post->title, 20) }}</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-current">ویرایش</span>
+                </nav>
+                <div class="page-title">
+                    <h1>
+                        <i class="fas fa-edit"></i>
+                        ویرایش نوشته
+                    </h1>
+                    <p>محتوای خود را ویرایش و بهبود دهید</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="edit-wrapper">
+        <div class="container">
+            <div class="edit-grid">
+                <div class="form-section">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h2>
+                                <i class="fas fa-pencil-alt"></i>
+                                ویرایش محتوا
+                            </h2>
+                            <p>اطلاعات پست خود را بروزرسانی کنید</p>
+                        </div>
+
+                        <!-- Alert Messages -->
+                        @if (session('success'))
+                            <div class="custom-alert success-alert">
+                                <div class="alert-content">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>{{ session('success') }}</span>
+                                </div>
+                                <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="custom-alert error-alert">
+                                <div class="alert-content">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>{{ session('error') }}</span>
+                                </div>
+                                <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('posts.update', $post->id) }}" class="edit-form">
+                            @csrf
+                            @method('PUT')
+                            
+                            <div class="form-group">
+                                <label for="title" class="form-label">
+                                    <i class="fas fa-heading"></i>
+                                    عنوان نوشته
+                                </label>
+                                <div class="input-wrapper">
+                                    <input 
+                                        type="text" 
+                                        class="form-input {{ $errors->has('title') ? 'error' : '' }}" 
+                                        id="title" 
+                                        name="title" 
+                                        value="{{ old('title', $post->title) }}" 
+                                        placeholder="عنوان جذاب و توصیفی انتخاب کنید..."
+                                        required
+                                    >
+                                    <div class="input-border"></div>
+                                </div>
+                                @error('title')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-hint">
+                                    <i class="fas fa-info-circle"></i>
+                                    عنوان باید بین 5 تا 255 کاراکتر باشد
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category_id" class="form-label">
+                                    <i class="fas fa-tags"></i>
+                                    دسته‌بندی
+                                </label>
+                                <div class="input-wrapper">
+                                    <select 
+                                        class="form-select {{ $errors->has('category_id') ? 'error' : '' }}" 
+                                        id="category_id" 
+                                        name="category_id" 
+                                        required
+                                    >
+                                        <option value="">انتخاب دسته‌بندی</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }} ({{ $category->posts_count ?? 0 }} پست)
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="input-border"></div>
+                                </div>
+                                @error('category_id')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-hint">
+                                    <i class="fas fa-info-circle"></i>
+                                    دسته‌بندی مناسب برای پست خود انتخاب کنید
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="content" class="form-label">
+                                    <i class="fas fa-align-left"></i>
+                                    محتوای نوشته
+                                </label>
+                                <div class="textarea-wrapper">
+                                    <textarea 
+                                        class="form-textarea {{ $errors->has('content') ? 'error' : '' }}" 
+                                        id="content" 
+                                        name="content" 
+                                        rows="12" 
+                                        placeholder="محتوای خود را اینجا بنویسید..."
+                                        required
+                                    >{{ old('content', $post->content) }}</textarea>
+                                    <div class="textarea-border"></div>
+                                    <div class="character-count">
+                                        <span id="charCount">{{ strlen(old('content', $post->content)) }}</span> کاراکتر
+                                    </div>
+                                </div>
+                                @error('content')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-hint">
+                                    <i class="fas fa-info-circle"></i>
+                                    محتوا باید حداقل 10 کاراکتر داشته باشد
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    ذخیره تغییرات
+                                    <div class="btn-ripple"></div>
+                                </button>
+                                
+                                <a href="{{ route('posts.show', $post->id) }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-right"></i>
+                                    بازگشت
+                                </a>
+                                
+                                <button type="button" class="btn btn-outline" onclick="resetForm()">
+                                    <i class="fas fa-undo"></i>
+                                    بازگردانی
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h3>
+                                <i class="fas fa-lightbulb"></i>
+                                راهنمای ویرایش
+                            </h3>
+                        </div>
+                        <div class="info-content">
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="tip-text">
+                                    <h4>عنوان جذاب</h4>
+                                    <p>عنوانی انتخاب کنید که توجه خواننده را جلب کند</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-paragraph"></i>
+                                </div>
+                                <div class="tip-text">
+                                    <h4>محتوای مفصل</h4>
+                                    <p>مطلب خود را کامل و واضح بیان کنید</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-spell-check"></i>
+                                </div>
+                                <div class="tip-text">
+                                    <h4>بررسی املا</h4>
+                                    <p>قبل از انتشار، املا و گرامر را بررسی کنید</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3>
+                                <i class="fas fa-chart-bar"></i>
+                                آمار پست
+                            </h3>
+                        </div>
+                        <div class="stats-content">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $post->views_count ?? 0 }}</div>
+                                <div class="stat-label">بازدید</div>
+                                <i class="fas fa-eye stat-icon"></i>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $post->likes_count ?? 0 }}</div>
+                                <div class="stat-label">لایک</div>
+                                <i class="fas fa-heart stat-icon"></i>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $post->created_at->diffForHumans() }}</div>
+                                <div class="stat-label">ایجاد شده</div>
+                                <i class="fas fa-clock stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-// Character counter for textarea
+// به‌روزرسانی خودکار دسته‌بندی‌ها با AJAX
 document.addEventListener('DOMContentLoaded', function() {
+    async function loadCategories() {
+        try {
+            const response = await fetch('/api/categories');
+            const result = await response.json();
+            if (result.success) {
+                const select = document.querySelector('#category_id');
+                select.innerHTML = '<option value="">انتخاب دسته‌بندی</option>';
+                result.data.forEach(category => {
+                    const option = new Option(
+                        `${category.name} (${category.posts_count || 0} پست ((((پست)))`,
+                        category.id,
+                        false,
+                        category.id == '{{ old('category_id', $post->category_id) }}'
+                    );
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading categories:', error);
+        }
+    }
+
+    // فراخوانی اولیه
+    loadCategories();
+
+    // گوش دادن به رویداد categoryCreated
+    document.addEventListener('categoryCreated', loadCategories);
+
+    // Character counter for textarea
     const textarea = document.getElementById('content');
     const charCount = document.getElementById('charCount');
     
@@ -748,7 +811,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const count = textarea.value.length;
         charCount.textContent = count.toLocaleString('fa-IR');
         
-        // Change color based on length
         if (count < 10) {
             charCount.style.color = '#e53e3e';
         } else if (count < 50) {
@@ -758,10 +820,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Initial count
     updateCharCount();
-    
-    // Update on input
     textarea.addEventListener('input', updateCharCount);
 });
 
@@ -769,12 +828,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function resetForm() {
     if (confirm('آیا مطمئن هستید که می‌خواهید فرم را به حالت اولیه بازگردانید؟')) {
         document.querySelector('.edit-form').reset();
-        
-        // Reset to original values
         document.getElementById('title').value = '{{ $post->title }}';
         document.getElementById('content').value = '{{ $post->content }}';
+        document.getElementById('category_id').value = '{{ $post->category_id }}';
         
-        // Update character count
         const event = new Event('input');
         document.getElementById('content').dispatchEvent(event);
     }

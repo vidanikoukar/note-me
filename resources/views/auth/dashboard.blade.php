@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.app')
 
 @section('title', 'داشبورد - Note Me')
@@ -278,7 +277,7 @@
                                 <div class="stats-icon bg-warning bg-opacity-10 mx-auto">
                                     <i class="bi bi-eye text-warning"></i>
                                 </div>
-                                <h3 class="text-warning">1,234</h3>
+                                <h3 class="text-warning">{{ $total_views ?? 0 }}</h3>
                                 <p class="text-muted mb-0">بازدید</p>
                             </div>
                         </div>
@@ -287,7 +286,7 @@
                                 <div class="stats-icon bg-info bg-opacity-10 mx-auto">
                                     <i class="bi bi-heart text-info"></i>
                                 </div>
-                                <h3 class="text-info">89</h3>
+                                <h3 class="text-info">{{ $total_likes ?? 0 }}</h3>
                                 <p class="text-muted mb-0">لایک</p>
                             </div>
                         </div>
@@ -299,31 +298,23 @@
                             <div class="stats-card">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5>فعالیت‌های اخیر</h5>
-                                    <button class="btn-custom btn-sm">مشاهده همه</button>
+                                    <a href="{{ route('posts.index') }}" class="btn-custom btn-sm">مشاهده همه</a>
                                 </div>
                                 <div class="activity-list">
                                     <div class="list-group list-group-flush">
-                                        <div class="list-group-item d-flex justify-content-between align-items-start">
-                                            <div class="me-auto">
-                                                <div class="fw-bold">شعر جدید منتشر شد</div>
-                                                <small class="text-muted">2 ساعت پیش</small>
+                                        @forelse ($recent_posts as $post)
+                                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                                <div class="me-auto">
+                                                    <div class="fw-bold">{{ $post->title }}</div>
+                                                    <small class="text-muted">{{ $post->created_at->diffForHumans() }}</small>
+                                                </div>
+                                                <span class="badge bg-primary rounded-pill">جدید</span>
                                             </div>
-                                            <span class="badge bg-primary rounded-pill">جدید</span>
-                                        </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-start">
-                                            <div class="me-auto">
-                                                <div class="fw-bold">پروفایل بروزرسانی شد</div>
-                                                <small class="text-muted">1 روز پیش</small>
+                                        @empty
+                                            <div class="list-group-item">
+                                                <div class="text-muted">فعالیتی وجود ندارد</div>
                                             </div>
-                                            <span class="badge bg-success rounded-pill">تکمیل</span>
-                                        </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-start">
-                                            <div class="me-auto">
-                                                <div class="fw-bold">یادداشت جدید اضافه شد</div>
-                                                <small class="text-muted">3 روز پیش</small>
-                                            </div>
-                                            <span class="badge bg-info rounded-pill">یادداشت</span>
-                                        </div>
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>

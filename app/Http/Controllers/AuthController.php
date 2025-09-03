@@ -93,7 +93,7 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'work_field' => $request->work_field,
             'status' => 'active',
-            'role' => 'user', // تنظیم نقش مستقیماً در جدول users
+            'role' => 'user',
         ]);
 
         Auth::login($user);
@@ -114,7 +114,11 @@ class AuthController extends Controller
         $user = Auth::user();
         $posts_count = Post::where('user_id', $user->id)->count();
         $published_posts_count = Post::where('user_id', $user->id)->where('published', true)->count();
-        return view('auth.dashboard', compact('user', 'posts_count', 'published_posts_count'));
+        $recent_posts = Post::where('user_id', $user->id)->where('published', true)->latest()->take(3)->get();
+        $total_views = Post::where('user_id', $user->id)->where('published', true)->sum('views_count');
+        $total_likes = Post::where('user_id', $user->id)->where('published', true)->sum('likes_count');
+
+        return view('auth.dashboard', compact('user', 'posts_count', 'published_posts_count', 'recent_posts', 'total_views', 'total_likes'));
     }
 
     public function profile()
@@ -168,3 +172,4 @@ class AuthController extends Controller
         return back()->with('success', 'پروفایل شما با موفقیت به‌روزرسانی شد');
     }
 }
+

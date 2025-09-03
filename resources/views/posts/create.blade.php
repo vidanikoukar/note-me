@@ -8,7 +8,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-/* ری‌ست کردن استایل‌های layout برای این صفحه */
+/* استایل‌های قبلی شما بدون تغییر */
 .content {
     background: #f0f2f8 !important;
     padding: 40px 0 !important;
@@ -319,6 +319,27 @@ textarea.form-control {
                 </div>
 
                 <div class="form-group">
+                    <label for="category_id" class="form-label">
+                        <i class="bi bi-tags"></i>
+                        دسته‌بندی
+                    </label>
+                    <select class="form-control" id="category_id" name="category_id" required>
+                        <option value="">انتخاب دسته‌بندی</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }} ({{ $category->posts_count ?? 0 }} پست)
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <div class="text-danger-custom">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
                     <label for="content" class="form-label">
                         <i class="bi bi-textarea"></i>
                         محتوای نوشته
@@ -355,9 +376,37 @@ textarea.form-control {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// افکت‌های تعاملی
+// به‌روزرسانی خودکار دسته‌بندی‌ها با AJAX
 document.addEventListener('DOMContentLoaded', function() {
-    // Focus effect for inputs
+    async function loadCategories() {
+        try {
+            const response = await fetch('/api/categories');
+            const result = await response.json();
+            if (result.success) {
+                const select = document.querySelector('#category_id');
+                select.innerHTML = '<option value="">انتخاب دسته‌بندی</option>';
+                result.data.forEach(category => {
+                    const option = new Option(
+                        `${category.name} (${category.posts_count || 0} پست)`,
+                        category.id,
+                        false,
+                        category.id == '{{ old('category_id') }}'
+                    );
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading categories:', error);
+        }
+    }
+
+    // فراخوانی اولیه
+    loadCategories();
+
+    // گوش دادن به رویداد categoryCreated
+    document.addEventListener('categoryCreated', loadCategories);
+
+    // افکت‌های تعاملی
     const inputs = document.querySelectorAll('.form-control');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {

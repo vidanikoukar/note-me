@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'شعر و متن‌ها')
+@section('title', ($categoryName ?? 'دسته‌بندی') . ' - Note Me')
 
 @section('content')
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-<div class="poetry-page">
+<div class="category-page">
     <div class="page-hero">
         <div class="hero-content">
-            <h1 class="hero-title">شعر و متن‌های زیبا</h1>
-            <p class="hero-subtitle">مجموعه‌ای از بهترین آثار هنری و ادبی</p>
+            <h1 class="hero-title">{{ $categoryName ?? 'دسته‌بندی' }}</h1>
+            <p class="hero-subtitle">{{ $categoryDescription ?? 'مجموعه‌ای از آثار مرتبط' }}</p>
             <div class="hero-decoration">
                 <i class="bi bi-feather"></i>
             </div>
         </div>
     </div>
-    
+
     @if (session('success'))
         <div class="custom-alert custom-alert-success" id="successAlert">
             <div class="alert-icon">
@@ -29,37 +29,8 @@
             </button>
         </div>
     @endif
-    
-    <div class="posts-container">
-        <!-- فرم فیلتر دسته‌بندی -->
-        <form class="filter-form" method="GET" action="{{ route('posts.index') }}">
-            <div class="form-group">
-                <label for="category_id" class="form-label">
-                    <i class="bi bi-tags"></i>
-                    فیلتر دسته‌بندی
-                </label>
-                <select class="form-control" id="category_id" name="category_id" onchange="this.form.submit()">
-                    <option value="">همه دسته‌بندی‌ها</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }} ({{ $category->posts_count ?? 0 }} پست)
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="search" class="form-label">
-                    <i class="bi bi-search"></i>
-                    جستجو
-                </label>
-                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="جستجوی عنوان یا محتوا...">
-            </div>
-            <button type="submit" class="btn-custom">
-                <i class="bi bi-filter"></i>
-                فیلتر
-            </button>
-        </form>
 
+    <div class="posts-container">
         <div class="posts-grid">
             @forelse ($posts as $post)
                 <article class="poetry-card" data-aos="fade-up">
@@ -74,7 +45,7 @@
                         
                         <div class="card-body">
                             <p class="card-excerpt">
-                                {{ Str::limit($post->content, 150) }}
+                                {{ \Str::limit(strip_tags($post->content), 150) }}
                             </p>
                         </div>
                         
@@ -112,7 +83,7 @@
                         </div>
                         
                         <div class="card-actions">
-                            <a href="{{ route('posts.show', $post->id) }}" class="read-btn">
+                            <a href="{{ route('posts.show', $post->slug ?? $post->id) }}" class="read-btn">
                                 <span>ادامه مطلب</span>
                                 <i class="bi bi-arrow-left"></i>
                             </a>
@@ -145,7 +116,7 @@
                 </div>
             @endforelse
         </div>
-        
+
         @auth
             <div class="create-section">
                 <div class="create-content">
@@ -175,18 +146,12 @@
                 </div>
             </div>
         @endauth
-        
-        @if(method_exists($posts, 'links'))
-            <div class="pagination-section">
-                {{ $posts->appends(request()->query())->links('pagination::bootstrap-5') }}
-            </div>
-        @endif
     </div>
 </div>
 
 <style>
 /* Reset و Base Styles */
-.poetry-page {
+.category-page {
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --secondary-gradient: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
     --shadow-light: 0 8px 25px rgba(102, 126, 234, 0.15);
@@ -304,63 +269,6 @@
 .alert-dismiss:hover {
     background: rgba(0, 0, 0, 0.1);
     transform: rotate(90deg);
-}
-
-/* Filter Form */
-.filter-form {
-    display: flex;
-    gap: 15px;
-    align-items: flex-end;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-}
-
-.form-group {
-    flex: 1;
-    min-width: 200px;
-}
-
-.form-label {
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
-    padding: 10px 15px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
-
-.form-control:focus {
-    border-color: #667eea;
-    background: white;
-    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.1);
-}
-
-.btn-custom {
-    background: var(--primary-gradient);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-}
-
-.btn-custom:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
 }
 
 /* Posts Container */
@@ -680,13 +588,6 @@
     line-height: 1.6;
 }
 
-/* Pagination */
-.pagination-section {
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-}
-
 /* Animations */
 @keyframes fadeInUp {
     from {
@@ -760,15 +661,6 @@
     .custom-alert {
         margin: -40px 15px 30px;
         padding: 15px 20px;
-    }
-    
-    .filter-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .form-group {
-        min-width: 100%;
     }
 }
 

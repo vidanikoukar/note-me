@@ -1,4 +1,3 @@
-
 <style>
     .form-group {
         margin-bottom: 1.5rem;
@@ -104,6 +103,16 @@
                         </div>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.categories.index') }}" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 {{ Route::is('admin.categories.*') ? 'bg-blue-100 text-blue-600' : '' }}">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                            </svg>
+                            مدیریت دسته‌بندی‌ها
+                        </div>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -153,6 +162,33 @@
                             {{ $message }}
                         </p>
                     @enderror
+                </div>
+
+                <!-- دسته‌بندی -->
+                <div class="form-group">
+                    <label for="category_id" class="form-label">
+                        دسته‌بندی <span class="text-red-500">*</span>
+                    </label>
+                    <select id="category_id" name="category_id" class="form-input @error('category_id') error @enderror" required>
+                        <option value="">انتخاب دسته‌بندی</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <p class="mt-2 text-sm text-red-600 flex items-center">
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                    @if ($categories->isEmpty())
+                        <p class="mt-2 text-sm text-gray-500">
+                            هیچ دسته‌بندی‌ای وجود ندارد. 
+                            <a href="{{ route('admin.categories.create') }}" class="text-blue-600 hover:underline">ایجاد دسته‌بندی جدید</a>
+                        </p>
+                    @endif
                 </div>
 
                 <!-- محتوا با ادیتور ساده -->
@@ -464,10 +500,11 @@
     document.getElementById('postForm').addEventListener('submit', function(e) {
         const title = document.getElementById('title').value.trim();
         const content = document.getElementById('content').value.trim();
+        const category = document.getElementById('category_id').value;
         
-        if (!title || !content) {
+        if (!title || !content || !category) {
             e.preventDefault();
-            alert('لطفاً عنوان و محتوای پست را وارد کنید.');
+            alert('لطفاً عنوان، محتوا و دسته‌بندی پست را وارد کنید.');
             return false;
         }
         
@@ -492,10 +529,11 @@
         console.log('Auto-saving draft...');
     }
 
-    ['title', 'content', 'excerpt'].forEach(fieldId => {
+    [' revered', 'content', 'excerpt', 'category_id'].forEach(fieldId => {
         document.getElementById(fieldId).addEventListener('input', function() {
             clearTimeout(autoSaveTimer);
             autoSaveTimer = setTimeout(autoSave, 30000); // Auto-save after 30 seconds of inactivity
         });
     });
 </script>
+@endsection
