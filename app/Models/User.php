@@ -5,11 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'role'])
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(function (string $eventName) {
+                $verb = match ($eventName) {
+                    'created' => 'ایجاد کرد',
+                    'updated' => 'بروزرسانی کرد',
+                    'deleted' => 'حذف کرد',
+                    default => $eventName,
+                };
+                return "کاربر \"{$this->name}\" را {$verb}";
+            });
+    }
 
     protected $fillable = [
         'name',

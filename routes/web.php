@@ -64,6 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('posts/{post}/unpublish', [AdminPostController::class, 'unpublish'])->name('posts.unpublish');
     Route::post('posts/{post}/duplicate', [AdminPostController::class, 'duplicate'])->name('posts.duplicate');
     Route::resource('categories', CategoryController::class);
+    Route::get('activity-log', [AdminController::class, 'activityLog'])->name('activity_log.index');
 });
 
 // جستجو
