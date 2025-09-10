@@ -1,5 +1,6 @@
+```blade
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,16 +12,18 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #d3a7ff, #8e44ad); /* تم بنفش جینگولی */
+            background: linear-gradient(135deg, #d3a7ff, #8e44ad);
             font-family: 'Helvetica', sans-serif;
             color: #2c3e50;
             overflow-x: hidden;
+            direction: rtl;
+            text-align: right;
         }
         .content {
             flex: 1 0 auto;
         }
         .header {
-            background: linear-gradient(135deg, #8e2de2, #641d8d); /* گرادیانت بنفش جذاب */
+            background: linear-gradient(135deg, #8e2de2, #641d8d);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             position: sticky;
             top: 0;
@@ -29,7 +32,7 @@
         }
         .header.scrolled {
             backdrop-filter: blur(12px);
-            background: rgba(142, 45, 226, 0.9); /* بنفش نیمه‌شفاف */
+            background: rgba(142, 45, 226, 0.9);
         }
         .nav-container {
             max-width: 1200px;
@@ -50,20 +53,20 @@
             gap: 8px;
             transition: transform 0.3s ease, color 0.3s ease;
             white-space: nowrap;
-            margin-left: 30px; /* افزایش فاصله از منوی خانه */
+            margin-right: 30px;
         }
         .logo:hover {
             transform: scale(1.1);
-            color: #f3e8ff; /* بنفش خیلی روشن برای hover */
+            color: #400f75;
         }
         .logo i {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(153, 8, 182, 0.25);
             padding: 10px;
             border-radius: 50%;
             transition: transform 0.5s ease;
         }
         .logo:hover i {
-            transform: rotate(360deg); /* انیمیشن چرخش آیکون */
+            transform: rotate(360deg);
         }
         .nav-menu ul {
             display: flex;
@@ -72,9 +75,10 @@
             align-items: center;
             margin: 0;
             padding: 0;
+            justify-content: flex-end;
         }
         .nav-menu li a {
-            color: #541799;
+            color: #ffffff;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
@@ -83,24 +87,25 @@
             position: relative;
         }
         .nav-menu li a:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(128, 41, 150, 0.2);
             transform: translateY(-2px);
-            color: #fcfcfc;
+            color: #410581;
         }
         .nav-menu li a.active {
             background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
         }
         .auth-btn {
-            background: #9b59b6; /* بنفش ملایم */
+            background: #9b59b6;
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px;
             border-radius: 8px;
-            color: white;
+            color: rgb(255, 255, 255);
             text-decoration: none;
             transition: all 0.3s ease;
         }
         .auth-btn:hover {
-            background: #8e44ad; /* بنفش تیره‌تر */
+            background: #8e44ad;
             border-color: rgba(255, 255, 255, 0.5);
         }
         .user-menu {
@@ -108,11 +113,11 @@
             display: inline-block;
         }
         .user-menu-toggle {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(194, 19, 19, 0.15);
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 10px 15px;
             border-radius: 8px;
-            color: white;
+            color: rgb(255, 255, 255);
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -122,12 +127,12 @@
         }
         .user-menu-toggle:hover {
             background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(182, 46, 46, 0.5);
         }
         .user-dropdown {
             position: absolute;
             top: 100%;
-            left: 0;
+            right: 0;
             background: #ffffff;
             min-width: 200px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -141,7 +146,7 @@
         }
         .user-dropdown.show {
             display: block;
-            animation: fadeIn 0.3s ease; /* انیمیشن نرم برای باز شدن */
+            animation: fadeIn 0.3s ease;
         }
         .user-dropdown a {
             display: flex;
@@ -155,22 +160,22 @@
             font-weight: 600;
         }
         .user-dropdown a i {
-            color: #dfd5d5;
+            color: #460f3e;
         }
         .user-dropdown a:hover {
             background: #ffffff;
-            color: #121212;
+            color: #ffffff;
         }
         .user-dropdown a:last-child {
             border-bottom: none;
-            color: #b71c1c;
+            color: #ffffff;
         }
         .user-dropdown a:last-child i {
-            color: #b71c1c;
+            color: #f8f8f8;
         }
         .user-dropdown a:last-child:hover {
             background: #ffe6e6;
-            color: #b71c1c;
+            color: #ffffff;
         }
         .mobile-menu-toggle {
             display: none;
@@ -186,7 +191,7 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #8e2de2, #4a00e0); /* تم بنفش برای منوی موبایل */
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         .mobile-menu.active {
@@ -197,14 +202,14 @@
         }
         .mobile-menu-content a {
             display: block;
-            color: rgb(255, 255, 255);
+            color: #ffffff;
             text-decoration: none;
             padding: 15px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
         .mobile-menu-content a:hover {
-            padding-right: 10px;
+            padding-left: 10px;
             background: rgba(255, 255, 255, 0.1);
         }
         .alert {
@@ -217,7 +222,7 @@
         .alert-success {
             background: #d4edda;
             border: 1px solid #c3e6cb;
-            color: #f8f8f8;
+            color: #155724;
         }
         .alert-danger {
             background: #f8d7da;
@@ -226,7 +231,7 @@
         }
         .alert-close {
             position: absolute;
-            left: 15px;
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
@@ -236,8 +241,8 @@
             color: inherit;
         }
         .footer {
-            background: linear-gradient(135deg, #d7a1f9, #6a1b9a); /* تم بنفش فوتر */
-            color: white;
+            background: linear-gradient(135deg, #d7a1f9, #6a1b9a);
+            color: #ffffff;
             flex-shrink: 0;
             padding: 60px 0 40px;
         }
@@ -251,7 +256,7 @@
             text-align: right;
         }
         .footer-section h4 {
-            color: #f3e8ff; /* بنفش روشن برای عنوان‌ها */
+            color: #ffffff;
             font-size: 1.3rem;
             margin-bottom: 25px;
             position: relative;
@@ -261,7 +266,7 @@
             content: '';
             position: absolute;
             bottom: 0;
-            right: 0;
+            left: 0;
             width: 50px;
             height: 3px;
             background: linear-gradient(45deg, #e040fb, #7b1fa2);
@@ -277,20 +282,20 @@
             margin-bottom: 12px;
         }
         .footer-section ul li a {
-            color: #b760c7;
+            color: #ffffff;
             text-decoration: none;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
-            justify-content: flex-end;
+            justify-content: flex-start;
         }
         .footer-section ul li a:hover {
             color: #f3e8ff;
-            padding-right: 10px;
+            padding-left: 10px;
         }
         .social-link.telegram {
-            background: #7b1fa2; /* بنفش برای تلگرام */
+            background: #7b1fa2;
             padding: 5px;
             border-radius: 5px;
         }
@@ -305,15 +310,15 @@
         .footer-logo-section h3 {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #f3e8ff; /* بنفش روشن */
+            color: #ffffff;
             margin-bottom: 15px;
         }
         .footer-logo-section p {
-            color: #e1bee7; /* بنفش ملایم */
+            color: #ffffff;
             line-height: 1.8;
             margin: 0;
             font-size: 1.1rem;
-            font-style: italic; /* برای حس جینگولی */
+            font-style: italic;
         }
         .search-container {
             position: relative;
@@ -324,7 +329,7 @@
         }
         .search-input {
             width: 100%;
-            padding: 10px 40px 10px 15px;
+            padding: 10px 15px 10px 40px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.15);
@@ -337,12 +342,12 @@
             color: rgba(255, 255, 255, 0.7);
         }
         .search-input:focus {
-            border-color: #e040fb; /* بنفش برای فوکوس */
+            border-color: #e040fb;
             background: rgba(255, 255, 255, 0.25);
         }
         .search-icon {
             position: absolute;
-            right: 10px;
+            left: 10px;
             color: #ffffff;
             font-size: 1.2rem;
             cursor: pointer;
@@ -354,8 +359,8 @@
         .search-results {
             position: absolute;
             top: 100%;
-            left: 0;
             right: 0;
+            left: 0;
             background: white;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
@@ -378,7 +383,7 @@
         }
         .search-result-item:hover {
             background: #f8f9fa;
-            padding-right: 30px;
+            padding-left: 30px;
         }
         .search-result-item:last-child {
             border-bottom: none;
@@ -402,7 +407,7 @@
             color: rgba(255, 255, 255, 0.7);
         }
         .mobile-search-container input:focus {
-            border-color: #e040fb; /* بنفش برای فوکوس */
+            border-color: #e040fb;
         }
         @media (max-width: 1024px) {
             .footer .container {
@@ -417,7 +422,7 @@
             }
             .logo {
                 font-size: 1.6rem;
-                margin-left: 20px; /* فاصله کمتر در تبلت */
+                margin-right: 20px;
             }
         }
         @media (max-width: 768px) {
@@ -426,8 +431,8 @@
                 gap: 40px;
             }
             .footer-section h4::after {
-                right: 50%;
-                transform: translateX(50%);
+                left: 50%;
+                transform: translateX(-50%);
             }
             .nav-menu {
                 display: none;
@@ -444,7 +449,7 @@
             .logo {
                 font-size: 1.4rem;
                 gap: 6px;
-                margin-left: 15px; /* فاصله کمتر در موبایل */
+                margin-right: 15px;
             }
         }
         @keyframes fadeIn {
@@ -563,24 +568,24 @@
             <div class="footer-section about-us">
                 <h4>درباره ما</h4>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-left"></i> ال</a></li>
-                    <li><a href="#"><i class="fas fa-angle-left"></i> ال</a></li>
-                    <li><a href="#"><i class="fas fa-angle-left"></i> ال</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> ال</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> ال</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> ال</a></li>
                 </ul>
             </div>
             <div class="footer-section content">
                 <h4>محتوای ما</h4>
                 <ul>
-                    <li><a href="{{ route('poems.index') }}"><i class="fas fa-angle-left"></i> شعر</a></li>
-                    <li><a href="{{ route('notes.index') }}"><i class="fas fa-angle-left"></i> دلنوشته</a></li>
-                    <li><a href="{{ route('books.index') }}"><i class="fas fa-angle-left"></i> کتاب</a></li>
-                    <li><a href="{{ route('movies.index') }}"><i class="fas fa-angle-left"></i> فیلم</a></li>
+                    <li><a href="{{ route('poems.index') }}"><i class="fas fa-angle-right"></i> شعر</a></li>
+                    <li><a href="{{ route('notes.index') }}"><i class="fas fa-angle-right"></i> دلنوشته</a></li>
+                    <li><a href="{{ route('books.index') }}"><i class="fas fa-angle-right"></i> کتاب</a></li>
+                    <li><a href="{{ route('movies.index') }}"><i class="fas fa-angle-right"></i> فیلم</a></li>
                 </ul>
             </div>
             <div class="footer-section contact-info">
                 <h4>راه‌های ارتباطی</h4>
                 <ul>
-                    <li><a href="{{ route('contact') }}"><i class="fas fa-angle-left"></i> تماس با ما</a></li>
+                    <li><a href="{{ route('contact') }}"><i class="fas fa-angle-right"></i> تماس با ما</a></li>
                     <li><a href="#" class="social-link telegram"><i class="fab fa-telegram"></i> تلگرام</a></li>
                     <li><a href="#" class="social-link instagram"><i class="fab fa-instagram"></i> اینستاگرام</a></li>
                 </ul>
@@ -689,3 +694,4 @@
     </script>
 </body>
 </html>
+```

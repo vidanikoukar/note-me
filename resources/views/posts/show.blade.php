@@ -190,7 +190,7 @@
 /* Hero Section */
 .post-hero {
     position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ac25c7 0%, #bd5be4 100%);
     padding: 60px 0 40px;
     margin-bottom: 0;
     overflow: hidden;
@@ -268,21 +268,21 @@
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgb(252, 82, 238);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .post-header-section {
     padding: 40px 40px 30px;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #e55cf1 0%, #e2e8f0 100%);
+    border-bottom: 1px solid #ff92ff;
 }
 
 .post-category-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #d864e7 0%, #db2dd3 100%);
     color: white;
     padding: 6px 16px;
     border-radius: 20px;
@@ -384,7 +384,7 @@
     padding: 20px;
     background: white;
     border-radius: 15px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #ffb3f9;
 }
 
 .stat-item {
@@ -397,13 +397,13 @@
 
 .stat-item i {
     font-size: 1.5rem;
-    color: #667eea;
+    color: #db39db;
 }
 
 .stat-item span:first-of-type {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2d3748;
+    color: #e369f3;
 }
 
 .stat-item span:last-of-type {
@@ -433,8 +433,8 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #e064ff 0%, #9334af 100%);
+    color: rgb(255, 255, 255);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
@@ -447,8 +447,8 @@
 
 .btn-outline {
     background: white;
-    color: #667eea;
-    border: 2px solid #667eea;
+    color: #c04fc0;
+    border: 2px solid #e274ca;
 }
 
 .btn-outline:hover {
@@ -459,7 +459,7 @@
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    background: linear-gradient(135deg, #ac26ce 0%, #d87beb 100%);
     color: white;
     box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
 }
@@ -570,13 +570,13 @@
     background: white;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px rgb(237, 44, 255);
+    border: 1px solid rgb(250, 177, 246);
 }
 
 .widget-header {
     padding: 20px 25px;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #b148be 0%, #e2e8f0 100%);
     border-bottom: 1px solid #e2e8f0;
 }
 
@@ -618,7 +618,7 @@
 .author-details h4 {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #2d3748;
+    color: #a5388a;
     margin: 0 0 5px;
 }
 
@@ -646,17 +646,17 @@
 }
 
 .share-btn.telegram {
-    background: #0088cc;
+    background: #f06df5;
     color: white;
 }
 
 .share-btn.twitter {
-    background: #1da1f2;
+    background: #f06df5;
     color: white;
 }
 
 .share-btn.linkedin {
-    background: #0077b5;
+    background: #f06df5;
     color: white;
 }
 

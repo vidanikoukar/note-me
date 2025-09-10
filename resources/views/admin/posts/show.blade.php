@@ -279,6 +279,15 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="bg-red-50 border-r-4 border-red-400 text-red-800 px-6 py-4 rounded-xl mb-6 shadow-sm animate-slide-up">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle ml-3 text-red-600"></i>
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
+
             <!-- Post Overview Cards -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Status Card -->
@@ -306,7 +315,7 @@
                         <i class="fas fa-eye text-blue-600 text-2xl"></i>
                     </div>
                     <h3 class="font-bold text-gray-800 mb-2">بازدیدها</h3>
-                    <div class="text-3xl font-bold text-blue-600">{{ number_format($post->views ?? 0) }}</div>
+                    <div class="text-3xl font-bold text-blue-600">{{ number_format($post->views_count ?? 0) }}</div>
                     <p class="text-sm text-gray-500 mt-1">تعداد بازدید</p>
                 </div>
 
@@ -316,7 +325,7 @@
                         <i class="fas fa-comments text-purple-600 text-2xl"></i>
                     </div>
                     <h3 class="font-bold text-gray-800 mb-2">نظرات</h3>
-                    <div class="text-3xl font-bold text-purple-600">0</div>
+                    <div class="text-3xl font-bold text-purple-600">{{ $post->comments ? $post->comments->count() : 0 }}</div>
                     <p class="text-sm text-gray-500 mt-1">تعداد نظرات</p>
                 </div>
 
@@ -344,7 +353,7 @@
                                     <div class="flex items-center space-x-6 space-x-reverse text-sm">
                                         <span class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
                                             <i class="fas fa-user ml-2"></i>
-                                            {{ $post->user->name }}
+                                            {{ $post->user->name ?? 'نامشخص' }}
                                         </span>
                                         <span class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
                                             <i class="fas fa-calendar ml-2"></i>
@@ -354,6 +363,12 @@
                                         <span class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
                                             <i class="fas fa-globe ml-2"></i>
                                             {{ $post->published_at->format('Y/m/d') }}
+                                        </span>
+                                        @endif
+                                        @if($post->category)
+                                        <span class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                                            <i class="fas fa-folder ml-2"></i>
+                                            {{ $post->category->name ?? 'بدون دسته' }}
                                         </span>
                                         @endif
                                     </div>
@@ -396,7 +411,7 @@
                             </h3>
                             <div class="section-divider"></div>
                             <div class="post-content">
-                                {!! $post->content !!}
+                                {!! nl2br(e($post->content)) !!}
                             </div>
                         </div>
                     </div>
@@ -417,7 +432,7 @@
                             </div>
                             <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                 <span class="text-sm font-medium text-gray-600">نویسنده:</span>
-                                <span class="font-medium text-gray-800">{{ $post->user->name }}</span>
+                                <span class="font-medium text-gray-800">{{ $post->user->name ?? 'نامشخص' }}</span>
                             </div>
                             <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                 <span class="text-sm font-medium text-gray-600">ایجاد:</span>
@@ -433,10 +448,17 @@
                                 <span class="text-sm text-green-700 font-medium">{{ $post->published_at->format('Y/m/d H:i') }}</span>
                             </div>
                             @endif
+                            @if($post->slug)
+                            <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-600">Slug:</span>
+                                <span class="text-xs text-blue-700 break-all">{{ $post->slug }}</span>
+                            </div>
+                            @endif
                         </div>
                     </div>
 
                     <!-- Author Info -->
+                    @if($post->user)
                     <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover">
                         <h3 class="flex items-center text-xl font-bold text-gray-800 mb-6">
                             <i class="fas fa-user-edit ml-3 text-green-600"></i>
@@ -451,18 +473,21 @@
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">نقش:</span>
-                                <span class="badge bg-blue-100 text-blue-800">
-                                    <i class="fas fa-user-tag"></i>
-                                    {{ $post->user->role ?? 'نویسنده' }}
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">عضویت:</span>
                                 <span class="text-sm text-gray-700">{{ $post->user->created_at->format('Y/m/d') }}</span>
                             </div>
+                            @if($post->user->status)
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">وضعیت:</span>
+                                <span class="badge bg-green-100 text-green-800">
+                                    <i class="fas fa-user-check"></i>
+                                    {{ $post->user->status }}
+                                </span>
+                            </div>
+                            @endif
                         </div>
                     </div>
+                    @endif
 
                     <!-- SEO Information -->
                     @if($post->meta_title || $post->meta_description || $post->meta_keywords)
@@ -513,16 +538,21 @@
                                 ویرایش پست
                             </a>
                             
-                            <a href="{{ route('admin.posts.preview', $post->id) }}" class="btn w-full bg-purple-600 text-white hover:bg-purple-700 justify-center" target="_blank">
-                                <i class="fas fa-external-link-alt"></i>
-                                پیش‌نمایش
-                            </a>
+                            @if(Route::has('admin.posts.preview'))
+                                <a href="{{ route('admin.posts.preview', $post->id) }}" class="btn w-full bg-purple-600 text-white hover:bg-purple-700 justify-center" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    پیش‌نمایش
+                                </a>
+                            @endif
 
                             @if($post->published)
                                 <form action="{{ route('admin.posts.update', $post->id) }}" method="POST" class="w-full">
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="published" value="0">
+                                    <input type="hidden" name="title" value="{{ $post->title }}">
+                                    <input type="hidden" name="content" value="{{ $post->content }}">
+                                    <input type="hidden" name="category_id" value="{{ $post->category_id }}">
                                     <button type="submit" onclick="return confirm('آیا می‌خواهید این پست را از انتشار خارج کنید؟')" 
                                             class="btn w-full gradient-warning text-white justify-center">
                                         <i class="fas fa-eye-slash"></i>
@@ -536,6 +566,7 @@
                                     <input type="hidden" name="published" value="1">
                                     <input type="hidden" name="title" value="{{ $post->title }}">
                                     <input type="hidden" name="content" value="{{ $post->content }}">
+                                    <input type="hidden" name="category_id" value="{{ $post->category_id }}">
                                     <button type="submit" onclick="return confirm('آیا می‌خواهید این پست را منتشر کنید؟')" 
                                             class="btn w-full gradient-success text-white justify-center">
                                         <i class="fas fa-globe"></i>
@@ -545,405 +576,3 @@
                             @endif
 
                             <button onclick="duplicatePost({{ $post->id }})" class="btn w-full bg-indigo-600 text-white hover:bg-indigo-700 justify-center">
-                                <i class="fas fa-copy"></i>
-                                کپی پست
-                            </button>
-                            
-                            <div class="section-divider"></div>
-                            
-                            <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" class="w-full">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick="return confirm('⚠️ هشدار!\n\nآیا مطمئن هستید که می‌خواهید این پست را حذف کنید؟\nاین عمل قابل بازگشت نیست و تمام اطلاعات پست از بین خواهد رفت.\n\nبرای ادامه OK را بزنید.')" 
-                                        class="btn w-full gradient-danger text-white justify-center">
-                                    <i class="fas fa-trash"></i>
-                                    حذف پست
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Advanced Stats -->
-            <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Content Analysis -->
-                <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover animate-slide-up">
-                    <h3 class="flex items-center text-xl font-bold text-gray-800 mb-6">
-                        <i class="fas fa-chart-bar ml-3 text-orange-600"></i>
-                        تحلیل محتوا
-                    </h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center p-4 bg-orange-50 rounded-xl">
-                            <div class="text-2xl font-bold text-orange-600">{{ str_word_count(strip_tags($post->content)) }}</div>
-                            <div class="text-sm text-gray-600 mt-1">تعداد کلمات</div>
-                        </div>
-                        <div class="text-center p-4 bg-teal-50 rounded-xl">
-                            <div class="text-2xl font-bold text-teal-600">{{ ceil(str_word_count(strip_tags($post->content)) / 200) }}</div>
-                            <div class="text-sm text-gray-600 mt-1">دقیقه مطالعه</div>
-                        </div>
-                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
-                            <div class="text-2xl font-bold text-indigo-600">{{ strlen(strip_tags($post->content)) }}</div>
-                            <div class="text-sm text-gray-600 mt-1">تعداد کاراکتر</div>
-                        </div>
-                        <div class="text-center p-4 bg-pink-50 rounded-xl">
-                            <div class="text-2xl font-bold text-pink-600">{{ $post->created_at->diffInDays() }}</div>
-                            <div class="text-sm text-gray-600 mt-1">روز از انتشار</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Activity Timeline -->
-                <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover animate-slide-up">
-                    <h3 class="flex items-center text-xl font-bold text-gray-800 mb-6">
-                        <i class="fas fa-history ml-3 text-green-600"></i>
-                        تاریخچه فعالیت
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center p-4 bg-blue-50 rounded-xl">
-                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center ml-4">
-                                <i class="fas fa-plus text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-800">پست ایجاد شد</p>
-                                <p class="text-sm text-gray-600">{{ $post->created_at->format('Y/m/d H:i') }}</p>
-                            </div>
-                        </div>
-                        
-                        @if($post->updated_at != $post->created_at)
-                        <div class="flex items-center p-4 bg-yellow-50 rounded-xl">
-                            <div class="w-10 h-10 bg-yellow-600 rounded-full flex items-center justify-center ml-4">
-                                <i class="fas fa-edit text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-800">آخرین ویرایش</p>
-                                <p class="text-sm text-gray-600">{{ $post->updated_at->format('Y/m/d H:i') }}</p>
-                            </div>
-                        </div>
-                        @endif
-                        
-                        @if($post->published_at)
-                        <div class="flex items-center p-4 bg-green-50 rounded-xl">
-                            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center ml-4">
-                                <i class="fas fa-globe text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-800">پست منتشر شد</p>
-                                <p class="text-sm text-gray-600">{{ $post->published_at->format('Y/m/d H:i') }}</p>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- Performance Analytics -->
-            <div class="mt-8 glass-effect rounded-2xl shadow-xl p-6 animate-slide-up">
-                <h3 class="flex items-center text-2xl font-bold text-gray-800 mb-6">
-                    <i class="fas fa-analytics ml-3 text-blue-600"></i>
-                    آمار عملکرد پست
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Views -->
-                    <div class="relative bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg card-hover">
-                        <div class="absolute top-4 left-4 opacity-20">
-                            <i class="fas fa-eye text-4xl"></i>
-                        </div>
-                        <div class="relative z-10">
-                            <h4 class="text-sm font-medium opacity-90 mb-2">مجموع بازدیدها</h4>
-                            <div class="text-3xl font-bold">{{ number_format($post->views ?? 0) }}</div>
-                            <div class="flex items-center mt-2 text-sm opacity-80">
-                                <i class="fas fa-arrow-up ml-1"></i>
-                                <span>+12% از هفته قبل</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Engagement -->
-                    <div class="relative bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg card-hover">
-                        <div class="absolute top-4 left-4 opacity-20">
-                            <i class="fas fa-heart text-4xl"></i>
-                        </div>
-                        <div class="relative z-10">
-                            <h4 class="text-sm font-medium opacity-90 mb-2">تعاملات</h4>
-                            <div class="text-3xl font-bold">{{ number_format($post->likes_count ?? 0) }}</div>
-                            <div class="flex items-center mt-2 text-sm opacity-80">
-                                <i class="fas fa-heart ml-1"></i>
-                                <span>لایک و واکنش</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Comments -->
-                    <div class="relative bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-2xl shadow-lg card-hover">
-                        <div class="absolute top-4 left-4 opacity-20">
-                            <i class="fas fa-comments text-4xl"></i>
-                        </div>
-                        <div class="relative z-10">
-                            <h4 class="text-sm font-medium opacity-90 mb-2">نظرات</h4>
-                            <div class="text-3xl font-bold">0</div>
-                            <div class="flex items-center mt-2 text-sm opacity-80">
-                                <i class="fas fa-comment ml-1"></i>
-                                <span>تعداد نظرات</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Shares -->
-                    <div class="relative bg-gradient-to-br from-pink-500 to-pink-600 text-white p-6 rounded-2xl shadow-lg card-hover">
-                        <div class="absolute top-4 left-4 opacity-20">
-                            <i class="fas fa-share text-4xl"></i>
-                        </div>
-                        <div class="relative z-10">
-                            <h4 class="text-sm font-medium opacity-90 mb-2">اشتراک‌گذاری</h4>
-                            <div class="text-3xl font-bold">{{ number_format($post->shares_count ?? 0) }}</div>
-                            <div class="flex items-center mt-2 text-sm opacity-80">
-                                <i class="fas fa-share-alt ml-1"></i>
-                                <span>بار اشتراک</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Information -->
-            @if($post->slug || $post->category)
-            <div class="mt-8 glass-effect rounded-2xl shadow-xl p-6 animate-slide-up">
-                <h3 class="flex items-center text-xl font-bold text-gray-800 mb-6">
-                    <i class="fas fa-info-circle ml-3 text-indigo-600"></i>
-                    اطلاعات تکمیلی
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @if($post->slug)
-                    <div class="p-4 bg-indigo-50 rounded-xl">
-                        <h4 class="font-medium text-gray-800 mb-2 flex items-center">
-                            <i class="fas fa-link ml-2 text-indigo-600"></i>
-                            نشانی پست (Slug)
-                        </h4>
-                        <div class="bg-white p-3 rounded-lg border border-indigo-200">
-                            <code class="text-indigo-700 text-sm break-all">{{ $post->slug }}</code>
-                        </div>
-                        <p class="text-xs text-gray-600 mt-2">
-                            <i class="fas fa-globe ml-1"></i>
-                            URL: /posts/{{ $post->slug }}
-                        </p>
-                    </div>
-                    @endif
-                    
-                    @if($post->category)
-                    <div class="p-4 bg-emerald-50 rounded-xl">
-                        <h4 class="font-medium text-gray-800 mb-2 flex items-center">
-                            <i class="fas fa-folder ml-2 text-emerald-600"></i>
-                            دسته‌بندی
-                        </h4>
-                        <span class="badge bg-emerald-100 text-emerald-800 text-lg">
-                            <i class="fas fa-tag"></i>
-                            {{ $post->category }}
-                        </span>
-                    </div>
-                    @else
-                    <div class="p-4 bg-gray-50 rounded-xl">
-                        <h4 class="font-medium text-gray-800 mb-2 flex items-center">
-                            <i class="fas fa-folder-open ml-2 text-gray-400"></i>
-                            دسته‌بندی
-                        </h4>
-                        <span class="badge bg-gray-100 text-gray-600">
-                            <i class="fas fa-minus"></i>
-                            بدون دسته‌بندی
-                        </span>
-                    </div>
-                    @endif
-                </div>
-            </div>
-            @endif
-
-            <!-- Action Buttons Footer -->
-            <div class="mt-8 flex justify-center">
-                <div class="glass-effect rounded-2xl shadow-xl p-6 inline-block">
-                    <div class="flex space-x-4 space-x-reverse">
-                        <a href="{{ route('admin.posts.index') }}" class="btn bg-gray-600 text-white hover:bg-gray-700">
-                            <i class="fas fa-list"></i>
-                            لیست پست‌ها
-                        </a>
-                        <a href="{{ route('admin.posts.create') }}" class="btn bg-green-600 text-white hover:bg-green-700">
-                            <i class="fas fa-plus"></i>
-                            پست جدید
-                        </a>
-                        @if($post->published && $post->slug)
-                        <a href="/posts/{{ $post->slug }}" target="_blank" class="btn bg-blue-600 text-white hover:bg-blue-700">
-                            <i class="fas fa-external-link-alt"></i>
-                            مشاهده در سایت
-                        </a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Toast Notifications -->
-<div id="toast-container" class="fixed top-4 left-4 z-50 space-y-4"></div>
-
-<!-- Scripts -->
-<script>
-// Toast Notification System
-function showToast(message, type = 'success') {
-    const toast = document.createElement('div');
-    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-    const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
-    
-    toast.className = `${bgColor} text-white px-6 py-4 rounded-xl shadow-lg transform translate-x-full opacity-0 transition-all duration-300 flex items-center`;
-    toast.innerHTML = `
-        <i class="fas ${icon} ml-3"></i>
-        <span>${message}</span>
-        <button onclick="this.parentElement.remove()" class="mr-4 hover:bg-white hover:bg-opacity-20 rounded-full p-1">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    document.getElementById('toast-container').appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => {
-        toast.classList.remove('translate-x-full', 'opacity-0');
-    }, 100);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        toast.classList.add('translate-x-full', 'opacity-0');
-        setTimeout(() => toast.remove(), 300);
-    }, 5000);
-}
-
-// Duplicate Post Function
-async function duplicatePost(postId) {
-    if (!confirm('آیا می‌خواهید یک کپی از این پست ایجاد کنید؟\nپست جدید به عنوان پیش‌نویس ذخیره خواهد شد.')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/admin/posts/${postId}/duplicate`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showToast('پست با موفقیت کپی شد! در حال انتقال به صفحه ویرایش...', 'success');
-            setTimeout(() => {
-                window.location.href = `/admin/posts/${data.post_id}/edit`;
-            }, 1500);
-        } else {
-            throw new Error(data.message || 'خطا در کپی کردن پست');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showToast('خطا در کپی کردن پست. لطفاً دوباره تلاش کنید.', 'error');
-    }
-}
-
-// Enhanced Confirm Dialog
-function enhancedConfirm(message, callback) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-    modal.innerHTML = `
-        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl transform scale-95 opacity-0 transition-all duration-300">
-            <div class="text-center">
-                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-4">تأیید عملیات</h3>
-                <p class="text-gray-600 mb-6 leading-relaxed">${message}</p>
-                <div class="flex space-x-3 space-x-reverse">
-                    <button onclick="this.closest('.fixed').remove()" class="btn bg-gray-500 text-white hover:bg-gray-600 flex-1">
-                        <i class="fas fa-times"></i>
-                        انصراف
-                    </button>
-                    <button onclick="confirmAction()" class="btn gradient-danger text-white hover:shadow-lg flex-1">
-                        <i class="fas fa-check"></i>
-                        تأیید
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Animate in
-    setTimeout(() => {
-        modal.querySelector('div > div').classList.remove('scale-95', 'opacity-0');
-        modal.querySelector('div > div').classList.add('scale-100', 'opacity-100');
-    }, 10);
-    
-    window.confirmAction = () => {
-        callback();
-        modal.remove();
-    };
-}
-
-// Add loading states to buttons
-document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function() {
-            const submitBtn = this.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i>در حال پردازش...';
-            }
-        });
-    });
-    
-    // Add smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-    
-    // Lazy load images
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        img.loading = 'lazy';
-        img.style.transition = 'opacity 0.3s ease';
-        img.style.opacity = '0';
-        img.onload = () => img.style.opacity = '1';
-    });
-});
-
-// Reading Progress Bar
-function updateReadingProgress() {
-    const contentElement = document.querySelector('.post-content');
-    if (!contentElement) return;
-    
-    const windowHeight = window.innerHeight;
-    const documentHeight = contentElement.offsetHeight;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const contentTop = contentElement.offsetTop;
-    
-    const progress = Math.min(100, Math.max(0, ((scrollTop - contentTop + windowHeight) / documentHeight) * 100));
-    
-    let progressBar = document.getElementById('reading-progress');
-    if (!progressBar) {
-        progressBar = document.createElement('div');
-        progressBar.id = 'reading-progress';
-        progressBar.className = 'fixed top-0 right-0 h-1 bg-gradient-to-l from-blue-600 to-purple-600 z-50 transition-all duration-200';
-        progressBar.style.width = '0%';
-        document.body.appendChild(progressBar);
-    }
-    
-    progressBar.style.width = `${progress}%`;
-}
-
-window.addEventListener('scroll', updateReadingProgress);
-window.addEventListener('resize', updateReadingProgress);
-
-// Initialize reading progress
-document.addEventListener('DOMContentLoaded', updateReadingProgress);
-</script>
-
-</body>
-</html>

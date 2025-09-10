@@ -46,7 +46,12 @@ class HomeController extends Controller
             ->whereIn('status', ['published', 'active'])
             ->latest('created_at')
             ->take(8)
-            ->get();
+            ->get()
+            ->each(function ($post) {
+                if ($post->slug === '') {
+                    $post->slug = null;
+                }
+            });
 
         Log::info('Recent Posts Count: ' . $recentPosts->count(), ['posts' => $recentPosts->toArray()]);
 
@@ -169,7 +174,11 @@ class HomeController extends Controller
             });
         }
 
-        $posts = $query->latest('created_at')->take($limit)->get();
+        $posts = $query->latest('created_at')->take($limit)->get()->each(function ($post) {
+            if ($post->slug === '') {
+                $post->slug = null;
+            }
+        });
         Log::info("Posts fetched for category: " . ($category ? $category->name : 'No Category'), [
             'count' => $posts->count(),
             'posts' => $posts->toArray()
@@ -348,6 +357,9 @@ class HomeController extends Controller
             ->take(5)
             ->get()
             ->map(function ($post) {
+                if ($post->slug === '') {
+                    $post->slug = null;
+                }
                 return [
                     'id' => $post->id,
                     'title' => $post->title,

@@ -12,8 +12,8 @@ class Post extends Model
     protected $table = 'posts';
 
     protected $fillable = [
-        'user_id',        // اضافه کردن user_id
-        'category_id',    // برای پشتیبانی از دسته‌بندی‌ها
+        'user_id',
+        'category_id',
         'title',
         'content',
         'excerpt',
@@ -31,6 +31,14 @@ class Post extends Model
     protected $casts = [
         'published' => 'boolean',
         'published_at' => 'datetime',
+        'views_count' => 'integer',
+        'likes_count' => 'integer',
+    ];
+
+    protected $attributes = [
+        'views_count' => 0,
+        'likes_count' => 0,
+        'published' => true,
     ];
 
     public function user()
@@ -46,5 +54,19 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    // متد کمکی برای افزایش بازدید
+    public function incrementViews()
+    {
+        $this->increment('views_count');
+        return $this;
+    }
+
+    // متد کمکی برای افزایش لایک
+    public function incrementLikes()
+    {
+        $this->increment('likes_count');
+        return $this;
     }
 }

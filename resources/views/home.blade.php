@@ -514,7 +514,7 @@ Because I fell in love...</h1>
                 <div class="row">
                     @foreach($recentPosts as $post)
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="content-card" onclick="location.href='{{ route('posts.show', $post->slug ?? $post->id) }}'">
+                            <div class="content-card" onclick="location.href='{{ route('posts.show', $post->slug ?: $post->id) }}'">
                                 <div class="card-image">
                                     @php
                                         $categoryName = $post->category->name ?? '';
@@ -616,7 +616,7 @@ Because I fell in love...</h1>
                 <div class="row">
                     @foreach($recentNotes as $note)
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="content-card" onclick="location.href='{{ route('posts.show', $note->slug ?? $note->id) }}'">
+                            <div class="content-card" onclick="location.href='{{ route('posts.show', $note->slug ?: $note->id) }}'">
                                 <div class="card-image">
                                     <i class="bi bi-heart-fill"></i>
                                 </div>
@@ -672,7 +672,7 @@ Because I fell in love...</h1>
                 <div class="row">
                     @foreach($recentBooks as $book)
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="content-card" onclick="location.href='{{ route('posts.show', $book->slug ?? $book->id) }}'">
+                            <div class="content-card" onclick="location.href='{{ route('posts.show', $book->slug ?: $book->id) }}'">
                                 <div class="card-image">
                                     <i class="bi bi-book-fill"></i>
                                 </div>
@@ -728,7 +728,7 @@ Because I fell in love...</h1>
             <div class="row">
                 @foreach($recentPoems as $poem)
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="content-card" onclick="location.href='{{ route('posts.show', $poem->slug ?? $poem->id) }}'">
+                            <div class="content-card" onclick="location.href='{{ route('posts.show', $poem->slug ?: $poem->id) }}'">
                             <div class="card-image">
                                 <i class="bi bi-star-fill"></i>
                             </div>

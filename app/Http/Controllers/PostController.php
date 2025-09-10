@@ -12,7 +12,7 @@ class PostController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); // فقط کاربران لاگین‌شده
+        $this->middleware('auth');
     }
 
     public function index(Request $request)
@@ -21,6 +21,32 @@ class PostController extends Controller
         $categoryFilter = $request->input('category_id');
 
         $posts = Post::with(['user', 'category'])
+            ->where('user_id', Auth::id())
+            ->when($search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
+            })
+            ->latest()
+            ->paginate(9);
+
+        $categories = CategoryHelper::getAllWithCount() ?? Category::all();
+
+        return view('posts.index', compact('posts', 'categories'));
+    }
+
+    public function published(Request $request)
+    {
+        $search = $request->input('search');
+        $categoryFilter = $request->input('category_id');
+
+        $posts = Post::with(['user', 'category'])
+            ->where('user_id', Auth::id())
             ->where('published', true)
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%{$search}%")
@@ -40,6 +66,80 @@ class PostController extends Controller
         return view('posts.index', compact('posts', 'categories'));
     }
 
+    public function views(Request $request)
+    {
+        $search = $request->input('search');
+        $categoryFilter = $request->input('category_id');
+
+        $posts = Post::with(['user', 'category'])
+            ->where('user_id', Auth::id())
+            ->when($search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
+            })
+            ->orderBy('views_count', 'desc')
+            ->paginate(9);
+
+        $categories = CategoryHelper::getAllWithCount() ?? Category::all();
+
+        return view('posts.index', compact('posts', 'categories'));
+    }
+
+    public function likes(Request $request)
+    {
+        $search = $request->input('search');
+        $categoryFilter = $request->input('category_id');
+
+        $posts = Post::with(['user', 'category'])
+            ->where('user_id', Auth::id())
+            ->when($search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
+            })
+            ->orderBy('likes_count', 'desc')
+            ->paginate(9);
+
+        $categories = CategoryHelper::getAllWithCount() ?? Category::all();
+
+        return view('posts.index', compact('posts', 'categories'));
+    }
+
+    public function all(Request $request)
+    {
+        $search = $request->input('search');
+        $categoryFilter = $request->input('category_id');
+
+        $posts = Post::with(['user', 'category'])
+            ->when($search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
+            })
+            ->latest()
+            ->paginate(9);
+
+        $categories = CategoryHelper::getAllWithCount() ?? Category::all();
+
+        return view('posts.all', compact('posts', 'categories'));
+    }
+
     public function create()
     {
         $categories = CategoryHelper::getAllWithCount() ?? Category::all();
@@ -52,12 +152,18 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
+            'excerpt' => 'nullable|string',
+            'slug' => 'nullable|string|unique:posts,slug',
+            'featured_image' => 'nullable|string',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
         ], [
             'title.required' => 'عنوان الزامی است',
             'title.max' => 'عنوان نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد',
             'content.required' => 'محتوا الزامی است',
             'category_id.required' => 'انتخاب دسته‌بندی الزامی است',
             'category_id.exists' => 'دسته‌بندی انتخاب‌شده معتبر نیست',
+            'slug.unique' => 'اسلاگ وارد شده قبلاً استفاده شده است',
         ]);
 
         Post::create([
@@ -65,7 +171,15 @@ class PostController extends Controller
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
+            'excerpt' => $request->excerpt,
+            'slug' => $request->slug ?? \Str::slug($request->title),
             'published' => true,
+            'published_at' => now(),
+            'featured_image' => $request->featured_image,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'views_count' => 0,
+            'likes_count' => 0,
         ]);
 
         return redirect()->route('posts.index')->with('success', 'نوشته با موفقیت اضافه شد!');
@@ -74,6 +188,7 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::with(['user', 'category'])->findOrFail($id);
+        $post->increment('views_count'); // افزایش تعداد بازدید
         return view('posts.show', compact('post'));
     }
 
@@ -98,18 +213,29 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
+            'excerpt' => 'nullable|string',
+            'slug' => 'nullable|string|unique:posts,slug,' . $id,
+            'featured_image' => 'nullable|string',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
         ], [
             'title.required' => 'عنوان الزامی است',
             'title.max' => 'عنوان نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد',
             'content.required' => 'محتوا الزامی است',
             'category_id.required' => 'انتخاب دسته‌بندی الزامی است',
             'category_id.exists' => 'دسته‌بندی انتخاب‌شده معتبر نیست',
+            'slug.unique' => 'اسلاگ وارد شده قبلاً استفاده شده است',
         ]);
 
         $post->update([
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
+            'excerpt' => $request->excerpt,
+            'slug' => $request->slug ?? \Str::slug($request->title),
+            'featured_image' => $request->featured_image,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
         ]);
 
         return redirect()->route('posts.show', $post->id)->with('success', 'پست با موفقیت ویرایش شد!');

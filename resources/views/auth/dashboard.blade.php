@@ -18,7 +18,7 @@
 }
 
 .sidebar {
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(180deg, #9327a8 0%, #b27dca 100%);
     min-height: 100vh;
     color: white;
     padding: 0;
@@ -97,10 +97,11 @@
     background: white;
     border-radius: 15px;
     padding: 25px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 5px 15px rgba(161, 171, 185, 0.08);
     border: none;
     margin-bottom: 20px;
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .stats-card:hover {
@@ -119,7 +120,7 @@
 }
 
 .welcome-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #882096 0%, #c280d3 100%);
     color: white;
     border-radius: 15px;
     padding: 30px;
@@ -127,11 +128,11 @@
 }
 
 .btn-custom {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #882096 0%, #c280d3 100%);
     border: none;
     border-radius: 25px;
     padding: 10px 25px;
-    color: white;
+    color: rgb(255, 255, 255);
     font-weight: bold;
     text-decoration: none;
     display: inline-block;
@@ -139,8 +140,8 @@
 }
 
 .btn-custom:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    color: white;
+    background: linear-gradient(135deg, #b128cc 0%, #d78ada 100%);
+    color: rgb(255, 255, 255);
     text-decoration: none;
     transform: translateY(-2px);
 }
@@ -194,7 +195,7 @@
             <div class="col-md-3 col-lg-2">
                 <div class="sidebar">
                     <div class="sidebar-content">
-                        <h4>داشبورد من</h4>
+                        <h3>داشبورد من</h3>
                         <nav class="nav flex-column">
                             <a class="nav-link active" href="{{ route('dashboard') }}">
                                 <i class="bi bi-house-door"></i>
@@ -254,41 +255,49 @@
                     <!-- Stats Cards -->
                     <div class="row">
                         <div class="col-md-3 col-sm-6">
-                            <div class="stats-card text-center">
-                                <div class="stats-icon bg-primary bg-opacity-10 mx-auto">
-                                    <i class="bi bi-file-text text-primary"></i>
+                            <a href="{{ route('posts.published') }}" class="text-decoration-none">
+                                <div class="stats-card text-center">
+                                    <div class="stats-icon bg-primary bg-opacity-10 mx-auto">
+                                        <i class="bi bi-file-text text-primary"></i>
+                                    </div>
+                                    <h3 class="text-primary">{{ $published_posts_count }}</h3>
+                                    <p class="text-muted mb-0">نوشته‌های منتشر شده</p>
                                 </div>
-                                <h3 class="text-primary">{{ $published_posts_count ?? 0 }}</h3>
-                                <p class="text-muted mb-0">نوشته‌های منتشر شده</p>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <div class="stats-card text-center">
-                                <div class="stats-icon bg-success bg-opacity-10 mx-auto">
-                                    <i class="bi bi-journal-text text-success"></i>
+                            <a href="{{ route('posts.index') }}" class="text-decoration-none">
+                                <div class="stats-card text-center">
+                                    <div class="stats-icon bg-success bg-opacity-10 mx-auto">
+                                        <i class="bi bi-journal-text text-success"></i>
+                                    </div>
+                                    <h3 class="text-success">{{ $posts_count }}</h3>
+                                    <p class="text-muted mb-0">نوشته تازه</p>
+                                    <a href="{{ route('posts.create') }}" class="btn-custom btn-sm mt-3">اضافه کردن نوشته</a>
                                 </div>
-                                <h3 class="text-success">{{ $posts_count ?? 0 }}</h3>
-                                <p class="text-muted mb-0">نوشته تازه</p>
-                                <a href="{{ route('posts.create') }}" class="btn-custom btn-sm mt-3">اضافه کردن نوشته</a>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <div class="stats-card text-center">
-                                <div class="stats-icon bg-warning bg-opacity-10 mx-auto">
-                                    <i class="bi bi-eye text-warning"></i>
+                            <a href="{{ route('posts.views') }}" class="text-decoration-none">
+                                <div class="stats-card text-center">
+                                    <div class="stats-icon bg-warning bg-opacity-10 mx-auto">
+                                        <i class="bi bi-eye text-warning"></i>
+                                    </div>
+                                    <h3 class="text-warning">{{ $total_views }}</h3>
+                                    <p class="text-muted mb-0">بازدید</p>
                                 </div>
-                                <h3 class="text-warning">{{ $total_views ?? 0 }}</h3>
-                                <p class="text-muted mb-0">بازدید</p>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <div class="stats-card text-center">
-                                <div class="stats-icon bg-info bg-opacity-10 mx-auto">
-                                    <i class="bi bi-heart text-info"></i>
+                            <a href="{{ route('posts.likes') }}" class="text-decoration-none">
+                                <div class="stats-card text-center">
+                                    <div class="stats-icon bg-info bg-opacity-10 mx-auto">
+                                        <i class="bi bi-heart text-info"></i>
+                                    </div>
+                                    <h3 class="text-info">{{ $total_likes }}</h3>
+                                    <p class="text-muted mb-0">لایک</p>
                                 </div>
-                                <h3 class="text-info">{{ $total_likes ?? 0 }}</h3>
-                                <p class="text-muted mb-0">لایک</p>
-                            </div>
+                            </a>
                         </div>
                     </div>
 
@@ -298,7 +307,7 @@
                             <div class="stats-card">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5>فعالیت‌های اخیر</h5>
-                                    <a href="{{ route('posts.index') }}" class="btn-custom btn-sm">مشاهده همه</a>
+                                    <a href="{{ route('posts.all') }}" class="btn-custom btn-sm">مشاهده همه</a>
                                 </div>
                                 <div class="activity-list">
                                     <div class="list-group list-group-flush">
