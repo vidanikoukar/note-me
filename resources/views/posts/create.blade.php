@@ -44,7 +44,6 @@
         box-shadow: 0 10px 30px rgba(180, 5, 224, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.8);
         position: relative;
-        overflow: hidden;
         animation: fadeInUp 0.6s ease-out;
     }
 
@@ -62,6 +61,7 @@
         margin-bottom: 25px;
         animation: fadeInRight 0.6s ease-out;
         animation-fill-mode: both;
+        transform: translateZ(0);
     }
 
     .form-group:nth-child(1) { animation-delay: 0.1s; }

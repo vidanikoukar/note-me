@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
@@ -63,6 +64,8 @@ class PostController extends Controller
 
         Post::create($data);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.posts.index')->with('success', 'پست با موفقیت ایجاد شد');
     }
 
@@ -107,6 +110,8 @@ class PostController extends Controller
 
         $post->update($data);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('admin.posts.index')->with('success', 'پست بروزرسانی شد');
     }
 
@@ -117,6 +122,8 @@ class PostController extends Controller
         }
 
         $post->delete();
+
+        Cache::forget('home_page_data');
 
         return redirect()->route('admin.posts.index')->with('success', 'پست حذف شد');
     }

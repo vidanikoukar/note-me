@@ -12,6 +12,9 @@ use App\Http\Controllers\Admin\CategoryController;
 // صفحه اصلی
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Public Post Routes
+Route::get('/all-posts', [PostController::class, 'allPosts'])->name('posts.all_public');
+
 // صفحات عمومی
 Route::get('/about', fn() => redirect('/'))->name('about');
 Route::get('/services', fn() => redirect('/'))->name('services');
@@ -72,6 +75,8 @@ Route::get('/notes', [HomeController::class, 'getNotesByCategory'])->name('notes
 Route::get('/books', [HomeController::class, 'getBooksByCategory'])->name('books.index');
 Route::get('/poems', [HomeController::class, 'getPoemsByCategory'])->name('poems.index');
 Route::get('/movies', [HomeController::class, 'getMoviesByCategory'])->name('movies.index');
+Route::get('/words-of-wisdom', [HomeController::class, 'getWordsOfWisdomByCategory'])->name('words_of_wisdom.index');
+Route::get('/motivational', [HomeController::class, 'getMotivationalByCategory'])->name('motivational.index');
 
 // متدهای کمکی HomeController
 Route::get('/home/clear-cache', [HomeController::class, 'clearCache'])->name('home.clear-cache');
