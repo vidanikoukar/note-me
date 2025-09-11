@@ -359,7 +359,6 @@
     font-size: 1.125rem;
     line-height: 1.8;
     color: #2d3748;
-    white-space: pre-wrap;
     word-wrap: break-word;
 }
 
