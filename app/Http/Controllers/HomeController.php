@@ -136,18 +136,34 @@ class HomeController extends Controller
                 ->orWhere('slug', 'like', '%video%');
         })->first();
 
+        $wordsOfWisdomCategory = Category::where(function ($query) {
+            $query->where('name', 'like', '%حرف حق%')
+                ->orWhere('name', 'like', '%حکمت%')
+                ->orWhere('slug', 'like', '%wisdom%');
+        })->first();
+
+        $motivationalCategory = Category::where(function ($query) {
+            $query->where('name', 'like', '%انگیزشی%')
+                ->orWhere('name', 'like', '%موفقیت%')
+                ->orWhere('slug', 'like', '%motivational%');
+        })->first();
+
         Log::info('Found Categories: ', [
             'notes' => $notesCategory ? $notesCategory->toArray() : null,
             'books' => $booksCategory ? $booksCategory->toArray() : null,
             'poems' => $poemsCategory ? $poemsCategory->toArray() : null,
             'movies' => $moviesCategory ? $moviesCategory->toArray() : null,
+            'words_of_wisdom' => $wordsOfWisdomCategory ? $wordsOfWisdomCategory->toArray() : null,
+            'motivational' => $motivationalCategory ? $motivationalCategory->toArray() : null,
         ]);
 
         return [
             'notes' => $notesCategory,
             'books' => $booksCategory,
             'poems' => $poemsCategory,
-            'movies' => $moviesCategory
+            'movies' => $moviesCategory,
+            'words_of_wisdom' => $wordsOfWisdomCategory,
+            'motivational' => $motivationalCategory
         ];
     }
 
@@ -266,6 +282,42 @@ class HomeController extends Controller
             })
             ->count();
 
+        $wordsOfWisdomCount = 0;
+        if ($categoriesMap['words_of_wisdom']) {
+            $wordsOfWisdomCount += Post::whereIn('status', ['published', 'active'])
+                ->where('category_id', $categoriesMap['words_of_wisdom']->id)
+                ->count();
+        }
+        $wordsOfWisdomCount += Post::whereIn('status', ['published', 'active'])
+            ->where(function ($query) {
+                $query->where('title', 'like', '%حرف حق%')
+                      ->orWhere('title', 'like', '%حکمت%')
+                      ->orWhere('content', 'like', '%پند%')
+                      ->orWhere('content', 'like', '%سخن بزرگان%');
+            })
+            ->when($categoriesMap['words_of_wisdom'], function ($query, $category) {
+                return $query->where('category_id', '!=', $category->id);
+            })
+            ->count();
+
+        $motivationalCount = 0;
+        if ($categoriesMap['motivational']) {
+            $motivationalCount += Post::whereIn('status', ['published', 'active'])
+                ->where('category_id', $categoriesMap['motivational']->id)
+                ->count();
+        }
+        $motivationalCount += Post::whereIn('status', ['published', 'active'])
+            ->where(function ($query) {
+                $query->where('title', 'like', '%انگیزشی%')
+                      ->orWhere('title', 'like', '%موفقیت%')
+                      ->orWhere('content', 'like', '%تلاش%')
+                      ->orWhere('content', 'like', '%پیشرفت%');
+            })
+            ->when($categoriesMap['motivational'], function ($query, $category) {
+                return $query->where('category_id', '!=', $category->id);
+            })
+            ->count();
+
         return [
             'total_posts' => $totalPosts,
             'total_users' => User::count(),
@@ -273,6 +325,8 @@ class HomeController extends Controller
             'total_books' => $booksCount,
             'total_poems' => $poemsCount,
             'total_movies' => $moviesCount,
+            'total_words_of_wisdom' => $wordsOfWisdomCount,
+            'total_motivational' => $motivationalCount,
             'total_views' => Post::whereIn('status', ['published', 'active'])->sum('views_count') ?: 0,
             'total_likes' => Post::whereIn('status', ['published', 'active'])->sum('likes_count') ?: 0,
         ];
@@ -297,6 +351,8 @@ class HomeController extends Controller
             'total_books' => 0,
             'total_poems' => 0,
             'total_movies' => 0,
+            'total_words_of_wisdom' => 0,
+            'total_motivational' => 0,
             'total_views' => 0,
             'total_likes' => 0,
         ];
@@ -372,6 +428,13 @@ class HomeController extends Controller
 
         return response()->json(['results' => $posts]);
     }
+    /**
+ * نمایش صفحه معرفی سایت
+ */
+public function about()
+{
+    return view('layouts.about');
+}
 
     /**
      * نمایش پست‌های دسته‌بندی دلنوشته
@@ -454,6 +517,48 @@ class HomeController extends Controller
             'posts' => $movies,
             'categoryName' => 'فیلم‌ها',
             'categoryDescription' => 'مجموعه‌ای از بهترین آثار سینمایی و ویدیوها'
+        ]);
+    }
+
+    /**
+     * نمایش پست‌های دسته‌بندی حرف حق
+     *
+     * @return \Illuminate\View\View
+     */
+    public function getWordsOfWisdomByCategory()
+    {
+        $categoriesMap = $this->findCategories();
+        $posts = $this->getPostsByCategory(
+            $categoriesMap['words_of_wisdom'],
+            ['حرف حق', 'حکمت', 'پند', 'سخن بزرگان'],
+            12
+        );
+
+        return view('posts.category', [
+            'posts' => $posts,
+            'categoryName' => 'حرف حق',
+            'categoryDescription' => 'مجموعه‌ای از سخنان حکیمانه و پندآموز'
+        ]);
+    }
+
+    /**
+     * نمایش پست‌های دسته‌بندی انگیزشی
+     *
+     * @return \Illuminate\View\View
+     */
+    public function getMotivationalByCategory()
+    {
+        $categoriesMap = $this->findCategories();
+        $posts = $this->getPostsByCategory(
+            $categoriesMap['motivational'],
+            ['انگیزشی', 'موفقیت', 'تلاش', 'پیشرفت'],
+            12
+        );
+
+        return view('posts.category', [
+            'posts' => $posts,
+            'categoryName' => 'انگیزشی',
+            'categoryDescription' => 'مطالبی برای افزایش انگیزه و امید به آینده'
         ]);
     }
 }

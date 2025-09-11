@@ -23,6 +23,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.activity_log.index') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 {{ Route::is('admin.activity_log.index') ? 'bg-blue-100 text-blue-600' : '' }}">
+                        گزارش فعالیت‌ها
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.posts.create') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 {{ Route::is('admin.posts.create') ? 'bg-blue-100 text-blue-600' : '' }}">
                         ایجاد پست جدید
                     </a>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class AdminController extends Controller
 {
@@ -53,5 +54,14 @@ class AdminController extends Controller
 
         $user->delete();
         return redirect()->route('admin.users')->with('success', 'کاربر حذف شد');
+    }
+
+    public function activityLog()
+    {
+        $activities = Activity::with(['causer', 'subject'])
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.activity_log.index', compact('activities'));
     }
 }

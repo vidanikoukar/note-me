@@ -4,10 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title', 'published'])
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(function (string $eventName) {
+                $verb = match ($eventName) {
+                    'created' => 'ایجاد کرد',
+                    'updated' => 'بروزرسانی کرد',
+                    'deleted' => 'حذف کرد',
+                    default => $eventName,
+                };
+                return "پست \"{$this->title}\" را {$verb}";
+            });
+    }
 
     protected $table = 'posts';
 

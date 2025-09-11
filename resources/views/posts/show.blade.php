@@ -190,7 +190,7 @@
 /* Hero Section */
 .post-hero {
     position: relative;
-    background: linear-gradient(135deg, #ac25c7 0%, #bd5be4 100%);
+    background: linear-gradient(135deg, #833792 0%, #8338a0 100%);
     padding: 60px 0 40px;
     margin-bottom: 0;
     overflow: hidden;
@@ -268,13 +268,13 @@
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgb(252, 82, 238);
+    box-shadow: 0 10px 30px rgb(119, 35, 112);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .post-header-section {
     padding: 40px 40px 30px;
-    background: linear-gradient(135deg, #e55cf1 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #7a1883 0%, #e2e8f0 100%);
     border-bottom: 1px solid #ff92ff;
 }
 

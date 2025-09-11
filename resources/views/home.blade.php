@@ -309,6 +309,10 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+.stat-card.clickable {
+    cursor: pointer;
+}
+
 .stat-number {
     font-size: 3rem;
     font-weight: 800;
@@ -473,29 +477,65 @@ Because I fell in love...</h1>
     <section class="stats-section">
         <div class="container">
             <div class="row">
+                <!-- کل مطالب -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <div class="stat-number">{{ number_format($stats['total_posts']) }}</div>
-                        <div class="stat-label">کل مطالب</div>
-                    </div>
+                    <a href="{{ route('posts.all_public') }}" class="text-decoration-none">
+                        <div class="stat-card clickable">
+                            <div class="stat-number">
+                                @if($stats['total_posts'] > 0)
+                                    {{ number_format($stats['total_posts']) }}
+                                @else
+                                    &nbsp;
+                                @endif
+                            </div>
+                            <div class="stat-label">همه ی مطالب</div>
+                        </div>
+                    </a>
                 </div>
+                <!-- کتاب‌ها -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <div class="stat-number">{{ number_format($stats['total_notes']) }}</div>
-                        <div class="stat-label">دلنوشته‌ها</div>
-                    </div>
+                    <a href="{{ route('books.index') }}" class="text-decoration-none">
+                        <div class="stat-card clickable">
+                            <div class="stat-number">
+                                @if($stats['total_books'] > 0)
+                                    {{ number_format($stats['total_books']) }}
+                                @else
+                                    &nbsp;
+                                @endif
+                            </div>
+                            <div class="stat-label">کتاب‌ها</div>
+                        </div>
+                    </a>
                 </div>
+                <!-- حرف حق -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <div class="stat-number">{{ number_format($stats['total_books']) }}</div>
-                        <div class="stat-label">کتاب‌ها</div>
-                    </div>
+                    <a href="{{ route('words_of_wisdom.index') }}" class="text-decoration-none">
+                        <div class="stat-card clickable">
+                            <div class="stat-number">
+                                @if($stats['total_words_of_wisdom'] > 0)
+                                    {{ number_format($stats['total_words_of_wisdom']) }}
+                                @else
+                                    &nbsp;
+                                @endif
+                            </div>
+                            <div class="stat-label">حرف حق</div>
+                        </div>
+                    </a>
                 </div>
+                <!-- انگیزشی -->
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <div class="stat-number">{{ number_format($stats['total_users']) }}</div>
-                        <div class="stat-label">نویسندگان</div>
-                    </div>
+                    <a href="{{ route('motivational.index') }}" class="text-decoration-none">
+                        <div class="stat-card clickable">
+                            <div class="stat-number">
+                                @if($stats['total_motivational'] > 0)
+                                    {{ number_format($stats['total_motivational']) }}
+                                @else
+                                    &nbsp;
+                                @endif
+                            </div>
+                            <div class="stat-label">انگیزشی</div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

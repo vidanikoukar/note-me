@@ -12,6 +12,9 @@ use App\Http\Controllers\Admin\CategoryController;
 // صفحه اصلی
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Public Post Routes
+Route::get('/all-posts', [PostController::class, 'allPosts'])->name('posts.all_public');
+
 // صفحات عمومی
 Route::get('/about', fn() => redirect('/'))->name('about');
 Route::get('/services', fn() => redirect('/'))->name('services');
@@ -61,6 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('posts/{post}/unpublish', [AdminPostController::class, 'unpublish'])->name('posts.unpublish');
     Route::post('posts/{post}/duplicate', [AdminPostController::class, 'duplicate'])->name('posts.duplicate');
     Route::resource('categories', CategoryController::class);
+    Route::get('activity-log', [AdminController::class, 'activityLog'])->name('activity_log.index');
 });
 
 // جستجو
@@ -72,6 +76,8 @@ Route::get('/notes', [HomeController::class, 'getNotesByCategory'])->name('notes
 Route::get('/books', [HomeController::class, 'getBooksByCategory'])->name('books.index');
 Route::get('/poems', [HomeController::class, 'getPoemsByCategory'])->name('poems.index');
 Route::get('/movies', [HomeController::class, 'getMoviesByCategory'])->name('movies.index');
+Route::get('/words-of-wisdom', [HomeController::class, 'getWordsOfWisdomByCategory'])->name('words_of_wisdom.index');
+Route::get('/motivational', [HomeController::class, 'getMotivationalByCategory'])->name('motivational.index');
 
 // متدهای کمکی HomeController
 Route::get('/home/clear-cache', [HomeController::class, 'clearCache'])->name('home.clear-cache');
@@ -92,3 +98,4 @@ Route::post('/newsletter/subscribe', function () {
 Route::get('/privacy', fn() => redirect('/'))->name('privacy');
 Route::get('/terms', fn() => redirect('/'))->name('terms');
 Route::get('/sitemap', fn() => redirect('/'))->name('sitemap');
+Route::get('/about', [HomeController::class, 'about'])->name('about');

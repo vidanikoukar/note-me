@@ -568,9 +568,8 @@
             <div class="footer-section about-us">
                 <h4>درباره ما</h4>
                 <ul>
-                    <li><a href="#"><i class="fas fa-angle-right"></i> ال</a></li>
-                    <li><a href="#"><i class="fas fa-angle-right"></i> ال</a></li>
-                    <li><a href="#"><i class="fas fa-angle-right"></i> ال</a></li>
+<li><a href="{{ route('about') }}"><i class="fas fa-angle-right"></i> اینجا کجاست</a></li>                    <li><a href="#"><i class="fas fa-angle-right"></i> من کیم</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> راهنما</a></li>
                 </ul>
             </div>
             <div class="footer-section content">

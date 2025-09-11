@@ -7,12 +7,38 @@ use App\Models\Category;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['show', 'allPosts']);
+    }
+
+    public function allPosts(Request $request)
+    {
+        $search = $request->input('search');
+        $categoryFilter = $request->input('category_id');
+
+        $posts = Post::with(['user', 'category'])
+            ->whereIn('status', ['published', 'active'])
+            ->when($search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
+            })
+            ->latest()
+            ->paginate(9);
+
+        $categories = CategoryHelper::getAllWithCount() ?? Category::all();
+
+        return view('posts.index', compact('posts', 'categories'));
     }
 
     public function index(Request $request)
@@ -182,12 +208,19 @@ class PostController extends Controller
             'likes_count' => 0,
         ]);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('posts.index')->with('success', 'نوشته با موفقیت اضافه شد!');
     }
 
-    public function show($id)
+    public function show($slugOrId)
     {
-        $post = Post::with(['user', 'category'])->findOrFail($id);
+        $post = Post::with(['user', 'category'])->where('slug', $slugOrId)->first();
+
+        if (!$post) {
+            $post = Post::with(['user', 'category'])->findOrFail($slugOrId);
+        }
+
         $post->increment('views_count'); // افزایش تعداد بازدید
         return view('posts.show', compact('post'));
     }
@@ -238,6 +271,8 @@ class PostController extends Controller
             'meta_description' => $request->meta_description,
         ]);
 
+        Cache::forget('home_page_data');
+
         return redirect()->route('posts.show', $post->id)->with('success', 'پست با موفقیت ویرایش شد!');
     }
 
@@ -248,6 +283,7 @@ class PostController extends Controller
             return redirect()->route('posts.index')->with('error', 'شما مجاز به حذف این پست نیستید.');
         }
         $post->delete();
+        Cache::forget('home_page_data');
         return redirect()->route('posts.index')->with('success', 'پست با موفقیت حذف شد!');
     }
 }
