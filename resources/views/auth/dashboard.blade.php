@@ -209,6 +209,10 @@
                                 <i class="bi bi-file-text"></i>
                                 مطالب من
                             </a>
+                            <a class="nav-link" href="{{ route('dashboard.saved') }}">
+                                <i class="bi bi-bookmark"></i>
+                                پست‌های ذخیره شده
+                            </a>
                             <a class="nav-link" href="#">
                                 <i class="bi bi-gear"></i>
                                 تنظیمات

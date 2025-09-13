@@ -87,4 +87,8 @@ class Post extends Model
         $this->increment('likes_count');
         return $this;
     }
+    public function savers()
+    {
+        return $this->belongsToMany(User::class, 'saved_posts')->withTimestamps();
+    }
 }

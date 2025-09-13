@@ -113,6 +113,18 @@
                                         <span>ویرایش</span>
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    <form action="{{ route('posts.save', $post) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="action-btn">
+                                            @if(Auth::check() && Auth::user()->savedPosts->contains($post))
+                                                <i class="bi bi-bookmark-fill"></i>
+                                                <span>ذخیره شده</span>
+                                            @else
+                                                <i class="bi bi-bookmark"></i>
+                                                <span>ذخیره</span>
+                                            @endif
+                                        </button>
+                                    </form>
                                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
@@ -198,7 +210,7 @@
 
 body {
     font-family: 'Vazirmatn', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: #4C2A85;
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -417,12 +429,13 @@ body {
     position: relative;
     border-radius: var(--border-radius);
     overflow: hidden;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-light);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     transition: var(--transition);
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
 }
 
 .poetry-card:hover {
@@ -449,6 +462,9 @@ body {
     padding: 30px;
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .card-header {
@@ -461,14 +477,14 @@ body {
 .card-title {
     font-size: 1.4rem;
     font-weight: 700;
-    color: white;
+    color: #3D1E6D;
     margin: 0;
     line-height: 1.4;
     flex: 1;
 }
 
 .card-bookmark {
-    color: rgba(255, 255, 255, 0.5);
+    color: #AAAAAA;
     font-size: 1.2rem;
     cursor: pointer;
     transition: var(--transition);
@@ -483,10 +499,11 @@ body {
 
 .card-body {
     margin-bottom: 25px;
+    flex-grow: 1;
 }
 
 .card-excerpt {
-    color: rgba(255, 255, 255, 0.8);
+    color: #333333;
     line-height: 1.7;
     margin: 0;
     font-size: 0.95rem;
@@ -495,8 +512,8 @@ body {
 .card-meta {
     margin-bottom: 25px;
     padding: 20px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .meta-row {
@@ -535,13 +552,13 @@ body {
 
 .author-name {
     font-weight: 600;
-    color: white;
+    color: #555555;
     font-size: 0.9rem;
 }
 
 .publish-date {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: #777777;
 }
 
 .category-tag {
@@ -570,11 +587,11 @@ body {
     align-items: center;
     gap: 6px;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #555555;
 }
 
 .stat i {
-    color: rgba(255, 255, 255, 0.9);
+    color: #7e4bb9;
 }
 
 .card-actions {

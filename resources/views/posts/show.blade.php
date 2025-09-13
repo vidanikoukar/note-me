@@ -91,6 +91,18 @@
                                 </a>
                                 
                                 @auth
+                                    <form action="{{ route('posts.save', $post) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-info">
+                                            @if(Auth::check() && Auth::user()->savedPosts->contains($post))
+                                                <i class="bi bi-bookmark-fill"></i>
+                                                <span>ذخیره شده</span>
+                                            @else
+                                                <i class="bi bi-bookmark"></i>
+                                                <span>ذخیره</span>
+                                            @endif
+                                        </button>
+                                    </form>
                                     @if (Auth::id() === $post->user_id)
                                         <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">
                                             <i class="fas fa-edit"></i>

@@ -50,6 +50,10 @@ Route::middleware('auth')->group(function () {
 
     // برای سازگاری با view
     Route::get('/articles/create', [PostController::class, 'create'])->name('articles.create');
+
+    // Saved Posts
+    Route::post('/posts/{post}/save', [App\Http\Controllers\SavedPostController::class, 'toggleSave'])->name('posts.save');
+    Route::get('/dashboard/saved', [App\Http\Controllers\SavedPostController::class, 'index'])->name('dashboard.saved');
 });
 
 // پنل ادمین

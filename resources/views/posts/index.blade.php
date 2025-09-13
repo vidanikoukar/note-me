@@ -164,6 +164,18 @@
                                         <span>ویرایش</span>
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    <form action="{{ route('posts.save', $post) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="action-btn">
+                                            @if(Auth::check() && Auth::user()->savedPosts->contains($post))
+                                                <i class="bi bi-bookmark-fill"></i>
+                                                <span>ذخیره شده</span>
+                                            @else
+                                                <i class="bi bi-bookmark"></i>
+                                                <span>ذخیره</span>
+                                            @endif
+                                        </button>
+                                    </form>
                                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')

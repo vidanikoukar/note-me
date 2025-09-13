@@ -175,11 +175,10 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'excerpt' => 'nullable|string',
-            'slug' => 'nullable|string|unique:posts,slug',
             'featured_image' => 'nullable|string',
             'meta_title' => 'nullable|string',
             'meta_description' => 'nullable|string',
@@ -192,13 +191,15 @@ class PostController extends Controller
             'slug.unique' => 'اسلاگ وارد شده قبلاً استفاده شده است',
         ]);
 
+        $slug = $this->generateUniqueSlug($request->title, $request->content);
+
         Post::create([
             'user_id' => Auth::id(),
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
             'excerpt' => $request->excerpt,
-            'slug' => $request->slug ?? \Str::slug($request->title),
+            'slug' => $slug,
             'published' => true,
             'published_at' => now(),
             'featured_image' => $request->featured_image,
@@ -211,6 +212,22 @@ class PostController extends Controller
         Cache::forget('home_page_data');
 
         return redirect()->route('posts.index')->with('success', 'نوشته با موفقیت اضافه شد!');
+    }
+
+    private function generateUniqueSlug($title, $content)
+    {
+        if (!empty($title)) {
+            $slug = \Str::slug($title);
+        } else {
+            $slug = \Str::slug(\Str::limit($content, 50, ''), '-') ?: 'post-' . time();
+        }
+
+        $originalSlug = $slug;
+        $count = 1;
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        return $slug;
     }
 
     public function show($slugOrId)
@@ -243,29 +260,32 @@ class PostController extends Controller
         }
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'excerpt' => 'nullable|string',
-            'slug' => 'nullable|string|unique:posts,slug,' . $id,
             'featured_image' => 'nullable|string',
             'meta_title' => 'nullable|string',
             'meta_description' => 'nullable|string',
         ], [
-            'title.required' => 'عنوان الزامی است',
             'title.max' => 'عنوان نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد',
             'content.required' => 'محتوا الزامی است',
             'category_id.required' => 'انتخاب دسته‌بندی الزامی است',
             'category_id.exists' => 'دسته‌بندی انتخاب‌شده معتبر نیست',
-            'slug.unique' => 'اسلاگ وارد شده قبلاً استفاده شده است',
         ]);
+
+        // Generate a new slug only if the title has changed
+        $slug = $post->slug;
+        if ($request->title !== $post->title) {
+            $slug = $this->generateUniqueSlug($request->title, $request->content);
+        }
 
         $post->update([
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
             'excerpt' => $request->excerpt,
-            'slug' => $request->slug ?? \Str::slug($request->title),
+            'slug' => $slug,
             'featured_image' => $request->featured_image,
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,

@@ -454,9 +454,9 @@
     <section class="hero-section">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">I write...
+                <h1 class="hero-title">... I write
                     <hr>
-Because I fell in love...</h1>
+ ... Because I fell in love</h1>
                 @auth
                     <a href="{{ route('posts.create') }}" class="hero-btn">
                         <i class="bi bi-pencil-square"></i>
