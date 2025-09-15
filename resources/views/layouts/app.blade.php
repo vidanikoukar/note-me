@@ -488,9 +488,9 @@
                     @auth
                         <li class="user-menu">
                             <span class="user-menu-toggle" onclick="toggleUserMenu()">
-                                <i class="fas fa-user"></i>
-                                {{ Auth::user()->first_name }}
-                                <i class="fas fa-chevron-down"></i>
+                                <img src="{{ Auth::user()->avatar }}" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-left: 8px;">
+                                {{ Auth::user()->name }}
+                                <i class="fas fa-chevron-down" style="font-size: 0.8em;"></i>
                             </span>
                             <div class="user-dropdown" id="userDropdown">
                                 <a href="{{ route('dashboard') }}">
