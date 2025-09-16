@@ -579,7 +579,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('posts.update', $post->id) }}" class="edit-form">
+                        <form method="POST" action="{{ route('posts.update', $post->id) }}" class="edit-form" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             
@@ -643,6 +643,36 @@
                                     <i class="fas fa-info-circle"></i>
                                     دسته‌بندی مناسب برای پست خود انتخاب کنید
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="featured_image" class="form-label">
+                                    <i class="fas fa-image"></i>
+                                    تصویر شاخص
+                                </label>
+                                @if ($post->featured_image)
+                                    <div class="mb-3">
+                                        <img src="{{ asset('storage/' . $post->featured_image) }}" alt="Featured Image" class="img-fluid rounded" style="max-height: 150px;">
+                                    </div>
+                                @endif
+                                <div class="input-wrapper">
+                                    <input 
+                                        type="file" 
+                                        class="form-input" 
+                                        id="featured_image" 
+                                        name="featured_image"
+                                    >
+                                </div>
+                                <div class="form-hint">
+                                    <i class="fas fa-info-circle"></i>
+                                    برای تغییر تصویر، فایل جدید را انتخاب کنید. اگر نمی‌خواهید تصویر را تغییر دهید، این قسمت را خالی بگذارید.
+                                </div>
+                                @error('featured_image')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="form-group">

@@ -33,7 +33,7 @@
             <div class="meta-row">
                 <div class="author-info">
                     <div class="author-avatar">
-                        <i class="bi bi-person-circle"></i>
+                        <img src="{{ $post->user->avatar }}" alt="{{ $post->user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div class="author-details">
                         <span class="author-name">{{ $post->user->nickname ?? $post->user->name ?? 'ناشناس' }}</span>

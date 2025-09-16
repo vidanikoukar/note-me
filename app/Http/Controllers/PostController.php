@@ -8,6 +8,7 @@ use App\Helpers\CategoryHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -179,7 +180,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'excerpt' => 'nullable|string',
-            'featured_image' => 'nullable|string',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'meta_title' => 'nullable|string',
             'meta_description' => 'nullable|string',
         ], [
@@ -188,10 +189,18 @@ class PostController extends Controller
             'content.required' => 'محتوا الزامی است',
             'category_id.required' => 'انتخاب دسته‌بندی الزامی است',
             'category_id.exists' => 'دسته‌بندی انتخاب‌شده معتبر نیست',
+            'featured_image.image' => 'فایل انتخاب شده باید تصویر باشد.',
+            'featured_image.mimes' => 'فرمت تصویر معتبر نیست.',
+            'featured_image.max' => 'حجم تصویر نباید بیشتر از 2 مگابایت باشد.',
             'slug.unique' => 'اسلاگ وارد شده قبلاً استفاده شده است',
         ]);
 
         $slug = $this->generateUniqueSlug($request->title, $request->content);
+
+        $imagePath = null;
+        if ($request->hasFile('featured_image')) {
+            $imagePath = $request->file('featured_image')->store('post_images', 'public');
+        }
 
         Post::create([
             'user_id' => Auth::id(),
@@ -202,7 +211,7 @@ class PostController extends Controller
             'slug' => $slug,
             'published' => true,
             'published_at' => now(),
-            'featured_image' => $request->featured_image,
+            'featured_image' => $imagePath,
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
             'views_count' => 0,
@@ -264,7 +273,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'excerpt' => 'nullable|string',
-            'featured_image' => 'nullable|string',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'meta_title' => 'nullable|string',
             'meta_description' => 'nullable|string',
         ], [
@@ -272,6 +281,9 @@ class PostController extends Controller
             'content.required' => 'محتوا الزامی است',
             'category_id.required' => 'انتخاب دسته‌بندی الزامی است',
             'category_id.exists' => 'دسته‌بندی انتخاب‌شده معتبر نیست',
+            'featured_image.image' => 'فایل انتخاب شده باید تصویر باشد.',
+            'featured_image.mimes' => 'فرمت تصویر معتبر نیست.',
+            'featured_image.max' => 'حجم تصویر نباید بیشتر از 2 مگابایت باشد.',
         ]);
 
         // Generate a new slug only if the title has changed
@@ -280,16 +292,18 @@ class PostController extends Controller
             $slug = $this->generateUniqueSlug($request->title, $request->content);
         }
 
-        $post->update([
-            'title' => $request->title,
-            'content' => $request->content,
-            'category_id' => $request->category_id,
-            'excerpt' => $request->excerpt,
-            'slug' => $slug,
-            'featured_image' => $request->featured_image,
-            'meta_title' => $request->meta_title,
-            'meta_description' => $request->meta_description,
-        ]);
+        $data = $request->only(['title', 'content', 'category_id', 'excerpt', 'meta_title', 'meta_description']);
+        $data['slug'] = $slug;
+
+        if ($request->hasFile('featured_image')) {
+            // Delete old image if it exists
+            if ($post->featured_image) {
+                Storage::disk('public')->delete($post->featured_image);
+            }
+            $data['featured_image'] = $request->file('featured_image')->store('post_images', 'public');
+        }
+
+        $post->update($data);
 
         Cache::forget('home_page_data');
 

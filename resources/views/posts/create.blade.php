@@ -285,7 +285,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('posts.store') }}">
+        <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group">
@@ -325,6 +325,20 @@
                     @endforeach
                 </select>
                 @error('category_id')
+                    <div class="text-danger-custom">
+                        <i class="bi bi-exclamation-circle"></i>
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="featured_image" class="form-label">
+                    <i class="bi bi-image"></i>
+                    تصویر شاخص
+                </label>
+                <input type="file" class="form-control" id="featured_image" name="featured_image">
+                @error('featured_image')
                     <div class="text-danger-custom">
                         <i class="bi bi-exclamation-circle"></i>
                         {{ $message }}

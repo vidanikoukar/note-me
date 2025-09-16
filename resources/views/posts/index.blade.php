@@ -104,6 +104,9 @@
         <div class="posts-grid">
             @forelse ($posts as $post)
                 <article class="poetry-card" data-category="{{ $post->category->name ?? 'نامشخص' }}">
+                    @if ($post->featured_image)
+                        <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" class="card-img-top">
+                    @endif
                     <div class="card-background"></div>
                     <div class="card-content">
                         <div class="card-header">
@@ -588,6 +591,12 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 40px;
     margin-bottom: 80px;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
 /* Poetry Cards */

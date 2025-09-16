@@ -56,6 +56,12 @@
                         </div>
                     </header>
 
+                    @if ($post->featured_image)
+                        <div class="post-featured-image">
+                            <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" class="img-fluid">
+                        </div>
+                    @endif
+
                     <div class="post-content-section">
                         <div class="content-wrapper">
                             {!! nl2br(e($post->content)) !!}
@@ -363,6 +369,19 @@
     gap: 5px;
 }
 
+.post-featured-image {
+    padding: 0 40px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
 .post-content-section {
     padding: 40px;
 }
@@ -371,7 +390,6 @@
     font-size: 1.125rem;
     line-height: 1.8;
     color: #2d3748;
-    white-space: pre-wrap;
     word-wrap: break-word;
 }
 

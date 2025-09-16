@@ -463,7 +463,7 @@
                         شروع به نوشتن
                     </a>
                 @else
-                    <a href="{{ route('register') }}" class="hero-btn">
+                    <a href="{{ route('register') }}" class="herobtn-">
                         <i class="bi bi-person-plus"></i>
                         عضو شوید
                     </a>

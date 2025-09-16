@@ -103,3 +103,7 @@ Route::get('/privacy', fn() => redirect('/'))->name('privacy');
 Route::get('/terms', fn() => redirect('/'))->name('terms');
 Route::get('/sitemap', fn() => redirect('/'))->name('sitemap');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+
+// در فایل routes/web.php این خط را اضافه کن:
+
+Route::view('/who-am-i', 'who-am-i')->name('who.am.i');

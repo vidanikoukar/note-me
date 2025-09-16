@@ -488,9 +488,9 @@
                     @auth
                         <li class="user-menu">
                             <span class="user-menu-toggle" onclick="toggleUserMenu()">
-                                <i class="fas fa-user"></i>
-                                {{ Auth::user()->first_name }}
-                                <i class="fas fa-chevron-down"></i>
+                                <img src="{{ Auth::user()->avatar }}" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-left: 8px;">
+                                {{ Auth::user()->name }}
+                                <i class="fas fa-chevron-down" style="font-size: 0.8em;"></i>
                             </span>
                             <div class="user-dropdown" id="userDropdown">
                                 <a href="{{ route('dashboard') }}">
@@ -570,8 +570,9 @@
             <div class="footer-section about-us">
                 <h4>درباره ما</h4>
                 <ul>
-<li><a href="{{ route('about') }}"><i class="fas fa-angle-right"></i> اینجا کجاست</a></li>                    <li><a href="#"><i class="fas fa-angle-right"></i> من کیم</a></li>
-                    <li><a href="#"><i class="fas fa-angle-right"></i> راهنما</a></li>
+<li><a href="{{ route('about') }}"><i class="fas fa-angle-right"></i> اینجا کجاست</a></li>         
+<li><a href="{{ route('who.am.i') }}"><i class="fas fa-angle-right"></i> من کیم</a></li>        
+            <li><a href="#"><i class="fas fa-angle-right"></i> راهنما</a></li>
                 </ul>
             </div>
             <div class="footer-section content">

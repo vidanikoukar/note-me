@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -137,6 +138,7 @@ class AuthController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'work_field' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ], [
             'full_name.required' => 'نام کامل الزامی است',
             'full_name.max' => 'نام کامل نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد',
@@ -149,6 +151,9 @@ class AuthController extends Controller
             'password.confirmed' => 'تایید رمز عبور مطابقت ندارد',
             'phone.max' => 'شماره تلفن نمی‌تواند بیشتر از ۲۰ کاراکتر باشد',
             'work_field.max' => 'زمینه کاری نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد',
+            'avatar.image' => 'فایل انتخابی باید یک تصویر باشد',
+            'avatar.mimes' => 'فرمت‌های مجاز تصویر: jpeg, png, jpg, gif',
+            'avatar.max' => 'حجم تصویر نمی‌تواند بیشتر از ۲ مگابایت باشد',
         ]);
 
         if ($validator->fails()) {
@@ -165,6 +170,17 @@ class AuthController extends Controller
 
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if it exists
+            if ($user->getRawOriginal('avatar')) {
+                Storage::disk('public')->delete('avatars/' . $user->getRawOriginal('avatar'));
+            }
+
+            $avatarName = $user->id . '_' . time() . '.' . $request->avatar->getClientOriginalExtension();
+            $request->avatar->storeAs('avatars', $avatarName, 'public');
+            $updateData['avatar'] = $avatarName;
         }
 
         $user->update($updateData);

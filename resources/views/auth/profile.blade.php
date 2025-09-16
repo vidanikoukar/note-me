@@ -41,16 +41,20 @@
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    color: white;
     margin: 0 auto 1rem;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .profile-header h1 {
@@ -217,14 +221,25 @@
     <div class="profile-card">
         <div class="profile-header">
             <div class="profile-avatar">
-                <i class="fas fa-user"></i>
+                <img src="{{ $user->avatar }}" alt="Avatar">
             </div>
             <h1>ویرایش پروفایل</h1>
         </div>
 
-        <form method="POST" action="{{ route('profile.update') }}">
+        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            <div class="form-group">
+                <label for="avatar" class="form-label">عکس پروفایل (اختیاری)</label>
+                <input type="file"
+                       class="form-control @error('avatar') is-invalid @enderror"
+                       id="avatar"
+                       name="avatar">
+                @error('avatar')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
             <div class="form-group">
                 <label for="full_name" class="form-label">نام کامل</label>
