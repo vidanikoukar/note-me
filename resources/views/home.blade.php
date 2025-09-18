@@ -24,7 +24,7 @@
 
 /* بخش هیرو */
 .hero-section {
-    background: linear-gradient(135deg, #682985 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #296085 0%, #4b6ea2 100%);
     color: white;
     padding: 120px 0 80px;
     position: relative;
@@ -454,9 +454,7 @@
     <section class="hero-section">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">... I write
-                    <hr>
- ... Because I fell in love</h1>
+                <h1 class="hero-title">جایی برای بیان احساسات</h1>
                 @auth
                     <a href="{{ route('posts.create') }}" class="hero-btn">
                         <i class="bi bi-pencil-square"></i>

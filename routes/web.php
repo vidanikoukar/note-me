@@ -107,3 +107,11 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 // در فایل routes/web.php این خط را اضافه کن:
 
 Route::view('/who-am-i', 'who-am-i')->name('who.am.i');
+
+Route::get('/guide', function () {
+    return view('guide');
+})->name('guide');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');

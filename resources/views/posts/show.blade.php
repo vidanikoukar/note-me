@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.app')
 
 @section('title', $post->title . ' - Note Me')
@@ -97,9 +96,9 @@
                                 </a>
                                 
                                 @auth
-                                    <form action="{{ route('posts.save', $post) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('posts.save', $post) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-info">
+                                        <button type="submit" class="btn btn-info {{ Auth::check() && Auth::user()->savedPosts->contains($post) ? 'saved' : '' }}">
                                             @if(Auth::check() && Auth::user()->savedPosts->contains($post))
                                                 <i class="bi bi-bookmark-fill"></i>
                                                 <span>ذخیره شده</span>
@@ -138,7 +137,7 @@
                                         <i class="fas fa-times"></i>
                                         انصراف
                                     </button>
-                                    <form id="deleteForm" method="POST" action="{{ route('posts.destroy', $post->id) }}" style="display: inline;">
+                                    <form id="deleteForm" method="POST" action="{{ route('posts.destroy', $post->id) }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">
@@ -446,6 +445,7 @@
     display: flex;
     gap: 15px;
     justify-content: center;
+    align-items: center;
 }
 
 .btn {
@@ -473,6 +473,33 @@
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     color: white;
     text-decoration: none;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #e064ff 0%, #9334af 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(224, 100, 255, 0.3);
+}
+
+.btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(224, 100, 255, 0.4);
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #9334af 0%, #7e22ce 100%);
+}
+
+.btn-info.saved {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-info.saved:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
 .btn-outline {
@@ -584,6 +611,7 @@
     gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .modal-footer .btn {

@@ -1,4 +1,4 @@
-```blade
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -14,7 +14,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #d3a7ff, #8e44ad);
+            background: linear-gradient(135deg, #4972bd, #445cad);
             font-family: 'Helvetica', sans-serif;
             color: #2c3e50;
             overflow-x: hidden;
@@ -25,7 +25,7 @@
             flex: 1 0 auto;
         }
         .header {
-            background: linear-gradient(135deg, #8e2de2, #641d8d);
+            background: linear-gradient(135deg, #3b97c2, #1d518d);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             position: sticky;
             top: 0;
@@ -34,7 +34,7 @@
         }
         .header.scrolled {
             backdrop-filter: blur(12px);
-            background: rgba(142, 45, 226, 0.9);
+            background: rgba(37, 87, 134, 0.9);
         }
         .nav-container {
             max-width: 1200px;
@@ -59,7 +59,7 @@
         }
         .logo:hover {
             transform: scale(1.1);
-            color: #400f75;
+            color: #0f4596;
         }
         .logo i {
             background: rgba(153, 8, 182, 0.25);
@@ -91,14 +91,14 @@
         .nav-menu li a:hover {
             background: rgba(128, 41, 150, 0.2);
             transform: translateY(-2px);
-            color: #410581;
+            color: #174292;
         }
         .nav-menu li a.active {
             background: rgba(255, 255, 255, 0.25);
             color: #ffffff;
         }
         .auth-btn {
-            background: #9b59b6;
+            background: #4e64aa;
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px;
             border-radius: 8px;
@@ -107,19 +107,19 @@
             transition: all 0.3s ease;
         }
         .auth-btn:hover {
-            background: #8e44ad;
-            border-color: rgba(255, 255, 255, 0.5);
+            background: #4454ad;
+            border-color: rgba(207, 42, 42, 0.5);
         }
         .user-menu {
             position: relative;
             display: inline-block;
         }
         .user-menu-toggle {
-            background: rgba(194, 19, 19, 0.15);
+            background: rgba(52, 148, 33, 0.15);
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 10px 15px;
             border-radius: 8px;
-            color: rgb(255, 255, 255);
+            color: rgb(255, 253, 253);
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -128,14 +128,14 @@
             gap: 8px;
         }
         .user-menu-toggle:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(182, 46, 46, 0.5);
+            background: rgba(80, 20, 95, 0.25);
+            border-color: rgba(247, 243, 243, 0.5);
         }
         .user-dropdown {
             position: absolute;
             top: 100%;
             right: 0;
-            background: #ffffff;
+            background: #440e41;
             min-width: 200px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
@@ -193,7 +193,7 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            background: linear-gradient(135deg, #2353ad, #3650a7);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         .mobile-menu.active {
@@ -243,7 +243,7 @@
             color: inherit;
         }
         .footer {
-            background: linear-gradient(135deg, #d7a1f9, #6a1b9a);
+            background: linear-gradient(135deg, #2959a1, #1b4872);
             color: #ffffff;
             flex-shrink: 0;
             padding: 60px 0 40px;
@@ -471,7 +471,7 @@
         <div class="nav-container">
             <a href="{{ route('home') }}" class="logo">
                 <i class="fas fa-sticky-note"></i>
-                <span>Note Me</span>
+                <span> شعرگرام</span>
             </a>
             <nav class="nav-menu" id="navMenu">
                 <ul>
@@ -564,16 +564,14 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-section footer-logo-section">
-                <h3>Note Me</h3>
-                <p>مینویسم ...<br>چون!<br>من عاشق شدم...</p>
+                <h3>شعرگرام </h3>
             </div>
             <div class="footer-section about-us">
                 <h4>درباره ما</h4>
                 <ul>
 <li><a href="{{ route('about') }}"><i class="fas fa-angle-right"></i> اینجا کجاست</a></li>         
 <li><a href="{{ route('who.am.i') }}"><i class="fas fa-angle-right"></i> من کیم</a></li>        
-            <li><a href="#"><i class="fas fa-angle-right"></i> راهنما</a></li>
-                </ul>
+<li><a href="{{ route('guide') }}"><i class="fas fa-angle-right"></i> راهنما</a></li>                </ul>
             </div>
             <div class="footer-section content">
                 <h4>محتوای ما</h4>
@@ -588,8 +586,6 @@
                 <h4>راه‌های ارتباطی</h4>
                 <ul>
                     <li><a href="{{ route('contact') }}"><i class="fas fa-angle-right"></i> تماس با ما</a></li>
-                    <li><a href="#" class="social-link telegram"><i class="fab fa-telegram"></i> تلگرام</a></li>
-                    <li><a href="#" class="social-link instagram"><i class="fab fa-instagram"></i> اینستاگرام</a></li>
                 </ul>
             </div>
         </div>
