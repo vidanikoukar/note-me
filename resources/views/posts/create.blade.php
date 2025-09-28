@@ -312,19 +312,21 @@
             </div>
 
             <div class="form-group">
-                <label for="category_id" class="form-label">
+                <label for="category_ids" class="form-label">
                     <i class="bi bi-tags"></i>
-                    دسته‌بندی
+                    دسته‌بندی‌ها
                 </label>
-                <select class="form-control" id="category_id" name="category_id" required>
-                    <option value="">انتخاب دسته‌بندی</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
+                <select class="form-control" id="category_ids" name="category_ids[]" multiple required>
+                    {{-- Options are loaded via JavaScript --}}
                 </select>
-                @error('category_id')
+                <small class="form-text text-muted mt-2">برای انتخاب چند دسته‌بندی، کلید Ctrl (یا Cmd در مک) را نگه دارید.</small>
+                @error('category_ids')
+                    <div class="text-danger-custom">
+                        <i class="bi bi-exclamation-circle"></i>
+                        {{ $message }}
+                    </div>
+                @enderror
+                 @error('category_ids.*')
                     <div class="text-danger-custom">
                         <i class="bi bi-exclamation-circle"></i>
                         {{ $message }}
@@ -387,20 +389,20 @@
         async function loadCategories() {
             try {
                 const response = await fetch('/api/categories');
-                const result = await response.json();
-                if (result.success) {
-                    const select = document.querySelector('#category_id');
-                    select.innerHTML = '<option value="">انتخاب دسته‌بندی</option>';
-                    result.data.forEach(category => {
-                        const option = new Option(
-                            category.name,
-                            category.id,
-                            false,
-                            category.id == '{{ old('category_id') }}'
-                        );
-                        select.appendChild(option);
-                    });
-                }
+                const categories = await response.json();
+                const select = document.querySelector('#category_ids');
+                const oldSelected = {!! json_encode(old('category_ids', [])) !!};
+
+                select.innerHTML = ''; // Clear existing options
+
+                categories.forEach(category => {
+                    const option = new Option(category.name, category.id);
+                    if (oldSelected.includes(String(category.id))) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+
             } catch (error) {
                 console.error('Error loading categories:', error);
             }
@@ -408,9 +410,6 @@
 
         // فراخوانی اولیه
         loadCategories();
-
-        // گوش دادن به رویداد categoryCreated
-        document.addEventListener('categoryCreated', loadCategories);
 
         // افکت‌های تعاملی
         const inputs = document.querySelectorAll('.form-control');
