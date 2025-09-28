@@ -180,7 +180,7 @@ class HomeController extends Controller
         $query = Post::with(['user', 'categories'])->whereIn('status', ['published', 'active']);
 
         if ($category) {
-            $query->whereHas('categories', fn($q) => $q->where('id', $category->id));
+            $query->whereHas('categories', fn($q) => $q->where('categories.id', $category->id));
         } else {
             $query->where(function ($q) use ($keywords) {
                 foreach ($keywords as $keyword) {
@@ -216,7 +216,7 @@ class HomeController extends Controller
         $notesCount = 0;
         if ($categoriesMap['notes']) {
             $notesCount += Post::whereIn('status', ['published', 'active'])
-                ->whereHas('categories', fn($q) => $q->where('id', $categoriesMap['notes']->id))
+                ->whereHas('categories', fn($q) => $q->where('categories.id', $categoriesMap['notes']->id))
                 ->count();
         }
         $notesCount += Post::whereIn('status', ['published', 'active'])
@@ -227,14 +227,14 @@ class HomeController extends Controller
                       ->orWhere('content', 'like', '%دلنوشته%');
             })
             ->when($categoriesMap['notes'], function ($query, $category) {
-                return $query->whereDoesntHave('categories', fn($q) => $q->where('id', $category->id));
+                return $query->whereDoesntHave('categories', fn($q) => $q->where('categories.id', $category->id));
             })
             ->count();
 
         $booksCount = 0;
         if ($categoriesMap['books']) {
             $booksCount += Post::whereIn('status', ['published', 'active'])
-                ->whereHas('categories', fn($q) => $q->where('id', $categoriesMap['books']->id))
+                ->whereHas('categories', fn($q) => $q->where('categories.id', $categoriesMap['books']->id))
                 ->count();
         }
         $booksCount += Post::whereIn('status', ['published', 'active'])
@@ -244,14 +244,14 @@ class HomeController extends Controller
                       ->orWhere('title', 'like', '%رمان%');
             })
             ->when($categoriesMap['books'], function ($query, $category) {
-                return $query->whereDoesntHave('categories', fn($q) => $q->where('id', $category->id));
+                return $query->whereDoesntHave('categories', fn($q) => $q->where('categories.id', $category->id));
             })
             ->count();
 
         $poemsCount = 0;
         if ($categoriesMap['poems']) {
             $poemsCount += Post::whereIn('status', ['published', 'active'])
-                ->whereHas('categories', fn($q) => $q->where('id', $categoriesMap['poems']->id))
+                ->whereHas('categories', fn($q) => $q->where('categories.id', $categoriesMap['poems']->id))
                 ->count();
         }
         $poemsCount += Post::whereIn('status', ['published', 'active'])
@@ -261,14 +261,14 @@ class HomeController extends Controller
                       ->orWhere('title', 'like', '%قطعه%');
             })
             ->when($categoriesMap['poems'], function ($query, $category) {
-                return $query->whereDoesntHave('categories', fn($q) => $q->where('id', $category->id));
+                return $query->whereDoesntHave('categories', fn($q) => $q->where('categories.id', $category->id));
             })
             ->count();
 
         $moviesCount = 0;
         if ($categoriesMap['movies']) {
             $moviesCount += Post::whereIn('status', ['published', 'active'])
-                ->whereHas('categories', fn($q) => $q->where('id', $categoriesMap['movies']->id))
+                ->whereHas('categories', fn($q) => $q->where('categories.id', $categoriesMap['movies']->id))
                 ->count();
         }
         $moviesCount += Post::whereIn('status', ['published', 'active'])
@@ -278,14 +278,14 @@ class HomeController extends Controller
                       ->orWhere('title', 'like', '%مستند%');
             })
             ->when($categoriesMap['movies'], function ($query, $category) {
-                return $query->whereDoesntHave('categories', fn($q) => $q->where('id', $category->id));
+                return $query->whereDoesntHave('categories', fn($q) => $q->where('categories.id', $category->id));
             })
             ->count();
 
         $wordsOfWisdomCount = 0;
         if ($categoriesMap['words_of_wisdom']) {
             $wordsOfWisdomCount += Post::whereIn('status', ['published', 'active'])
-                ->whereHas('categories', fn($q) => $q->where('id', $categoriesMap['words_of_wisdom']->id))
+                ->whereHas('categories', fn($q) => $q->where('categories.id', $categoriesMap['words_of_wisdom']->id))
                 ->count();
         }
         $wordsOfWisdomCount += Post::whereIn('status', ['published', 'active'])
@@ -296,14 +296,14 @@ class HomeController extends Controller
                       ->orWhere('content', 'like', '%سخن بزرگان%');
             })
             ->when($categoriesMap['words_of_wisdom'], function ($query, $category) {
-                return $query->whereDoesntHave('categories', fn($q) => $q->where('id', $category->id));
+                return $query->whereDoesntHave('categories', fn($q) => $q->where('categories.id', $category->id));
             })
             ->count();
 
         $motivationalCount = 0;
         if ($categoriesMap['motivational']) {
             $motivationalCount += Post::whereIn('status', ['published', 'active'])
-                ->whereHas('categories', fn($q) => $q->where('id', $categoriesMap['motivational']->id))
+                ->whereHas('categories', fn($q) => $q->where('categories.id', $categoriesMap['motivational']->id))
                 ->count();
         }
         $motivationalCount += Post::whereIn('status', ['published', 'active'])
@@ -314,7 +314,7 @@ class HomeController extends Controller
                       ->orWhere('content', 'like', '%پیشرفت%');
             })
             ->when($categoriesMap['motivational'], function ($query, $category) {
-                return $query->whereDoesntHave('categories', fn($q) => $q->where('id', $category->id));
+                return $query->whereDoesntHave('categories', fn($q) => $q->where('categories.id', $category->id));
             })
             ->count();
 
