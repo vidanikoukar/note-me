@@ -40,6 +40,9 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        // Forcefully dump the request data to debug the form submission issue.
+        dd($request->all());
+
         Log::info('Admin Post Store Request Data:', $request->all());
 
         $request->validate([
@@ -91,6 +94,9 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
+        // Forcefully dump the request data to debug the form submission issue.
+        dd($request->all());
+
         Log::info('Admin Post Update Request Data:', $request->all());
 
         $request->validate([
