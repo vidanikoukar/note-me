@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Category\app\Models\Category;
@@ -39,6 +40,8 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('Admin Post Store Request Data:', $request->all());
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -85,6 +88,8 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
+        Log::info('Admin Post Update Request Data:', $request->all());
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
