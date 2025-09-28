@@ -47,15 +47,10 @@ class RolePermissionSeeder extends Seeder
         $user = Role::findByName('user', 'web');
         $user->syncPermissions(['manage-content']);
 
-        // ایجاد یا به‌روزرسانی کاربر super-admin
-        $user = User::firstOrCreate(
-            ['email' => 'superadmin@example.com'],
-            [
-                'name' => 'Super Admin',
-                'password' => bcrypt('password123'),
-                'status' => 'active',
-            ]
-        );
-        $user->syncRoles(['super-admin']);
+        // Find the main admin user and assign the super-admin role
+        $user = User::where('email', 'admin@example.com')->first();
+        if ($user) {
+            $user->syncRoles(['super-admin']);
+        }
     }
 }
