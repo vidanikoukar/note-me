@@ -46,7 +46,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'category_ids' => 'required|array',
+            'category_ids' => 'nullable|array', // Temporarily nullable for debugging
             'category_ids.*' => 'exists:categories,id',
             'excerpt' => 'nullable|string',
         ]);
@@ -66,8 +66,11 @@ class PostController extends Controller
         }
 
         $post = Post::create($data);
-        $post->categories()->attach($request->category_ids);
 
+        // Attach categories only if they are provided
+        if ($request->has('category_ids')) {
+            $post->categories()->attach($request->category_ids);
+        }
 
         Cache::forget('home_page_data');
 
