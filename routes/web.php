@@ -7,7 +7,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
-use App\Http\Controllers\Admin\CategoryController;
 
 // صفحه اصلی
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -67,7 +66,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('posts/{post}/publish', [AdminPostController::class, 'publish'])->name('posts.publish');
     Route::patch('posts/{post}/unpublish', [AdminPostController::class, 'unpublish'])->name('posts.unpublish');
     Route::post('posts/{post}/duplicate', [AdminPostController::class, 'duplicate'])->name('posts.duplicate');
-    Route::resource('categories', CategoryController::class);
     Route::get('activity-log', [AdminController::class, 'activityLog'])->name('activity_log.index');
 });
 
@@ -90,8 +88,7 @@ Route::get('/home/quick-search', [HomeController::class, 'quickSearch'])->name('
 
 // API Routes
 Route::prefix('api')->group(function () {
-    Route::get('categories', [App\Http\Controllers\Api\CategoryController::class, 'index']);
-    Route::get('posts/category/{category}', [PostController::class, 'getByCategory']);
+    // Note: Category and post-by-category routes are now handled by the Category module.
 });
 
 // سایر روت‌ها

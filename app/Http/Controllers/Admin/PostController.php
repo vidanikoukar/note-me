@@ -4,24 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
+use Modules\Category\app\Models\Category;
 
 class PostController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $posts = Post::with(['user', 'category'])
+        $posts = Post::with(['user', 'categories'])
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('category', function ($q) use ($search) {
+                    ->orWhereHas('categories', function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%");
                     });
             })
@@ -43,7 +43,8 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'category_id' => 'required|exists:categories,id',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,id',
             'excerpt' => 'nullable|string',
         ]);
 
@@ -54,7 +55,6 @@ class PostController extends Controller
             'published' => $request->has('published'),
             'user_id' => auth()->id(),
             'published_at' => $request->has('published') ? now() : null,
-            'category_id' => $request->category_id,
             'slug' => Str::slug($request->title),
         ];
 
@@ -62,7 +62,9 @@ class PostController extends Controller
             $data['featured_image'] = $request->file('featured_image')->store('posts', 'public');
         }
 
-        Post::create($data);
+        $post = Post::create($data);
+        $post->categories()->attach($request->category_ids);
+
 
         Cache::forget('home_page_data');
 
@@ -71,7 +73,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        $post = Post::with(['user', 'category'])->findOrFail($post->id);
+        $post = Post::with(['user', 'categories'])->findOrFail($post->id);
         return view('admin.posts.show', compact('post'));
     }
 
@@ -87,7 +89,8 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'category_id' => 'required|exists:categories,id',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,id',
             'excerpt' => 'nullable|string',
         ]);
 
@@ -97,7 +100,6 @@ class PostController extends Controller
             'excerpt' => $request->excerpt,
             'published' => $request->has('published'),
             'published_at' => $request->has('published') ? ($post->published_at ?? now()) : null,
-            'category_id' => $request->category_id,
             'slug' => Str::slug($request->title),
         ];
 
@@ -109,6 +111,7 @@ class PostController extends Controller
         }
 
         $post->update($data);
+        $post->categories()->sync($request->category_ids);
 
         Cache::forget('home_page_data');
 
@@ -130,7 +133,7 @@ class PostController extends Controller
 
     public function preview(Post $post)
     {
-        $post = Post::with(['user', 'category'])->findOrFail($post->id);
+        $post = Post::with(['user', 'categories'])->findOrFail($post->id);
         return view('admin.posts.preview', compact('post'));
     }
 }

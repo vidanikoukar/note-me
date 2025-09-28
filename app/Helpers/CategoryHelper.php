@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\Category;
 use Illuminate\Support\Facades\Cache;
+use Modules\Category\app\Models\Category;
 
 class CategoryHelper
 {

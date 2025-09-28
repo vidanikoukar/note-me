@@ -183,16 +183,18 @@
 
                     <!-- دسته‌بندی -->
                     <div class="form-group">
-                        <label for="category_id" class="form-label">
-                            دسته‌بندی <span class="text-red-500">*</span>
+                        <label for="category_ids" class="form-label">
+                            دسته‌بندی‌ها <span class="text-red-500">*</span>
                         </label>
-                        <select id="category_id" name="category_id" class="form-input @error('category_id') error @enderror" required>
-                            <option value="">انتخاب دسته‌بندی</option>
+                        <select id="category_ids" name="category_ids[]" class="form-input @error('category_ids') error @enderror" multiple required>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" {{ (is_array(old('category_ids')) && in_array($category->id, old('category_ids'))) ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
                             @endforeach
                         </select>
-                        @error('category_id')
+                        <p class="mt-1 text-sm text-gray-500">می‌توانید با نگه داشتن کلید Ctrl (یا Cmd در مک) چند دسته‌بندی را انتخاب کنید.</p>
+                        @error('category_ids')
                             <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -355,11 +357,12 @@
         document.getElementById('postForm').addEventListener('submit', function(e) {
             const title = document.getElementById('title').value.trim();
             const content = document.getElementById('content').value.trim();
-            const category = document.getElementById('category_id').value;
-            
-            if (!title || !content || !category) {
+            const categories = document.getElementById('category_ids');
+            const selectedCategories = Array.from(categories.selectedOptions).map(option => option.value);
+
+            if (!title || !content || selectedCategories.length === 0) {
                 e.preventDefault();
-                alert('لطفاً عنوان، محتوا و دسته‌بندی پست را وارد کنید.');
+                alert('لطفاً عنوان، محتوا و حداقل یک دسته‌بندی برای پست انتخاب کنید.');
                 return false;
             }
         });
